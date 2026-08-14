@@ -1,0 +1,30 @@
+# Dependencies
+node_modules
+
+# Build output
+dist
+dist-ssr
+
+# Generated TypeScript build info & composite outputs
+*.tsbuildinfo
+vite.config.js
+vite.config.d.ts
+
+# Local dev logs
+dev-server.log
+npm-debug.log*
+
+# Test artifacts
+.playwright-mcp/
+
+# Editor / OS
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+Thumbs.db
+*.local
+
+# Env
+.env
+.env.*

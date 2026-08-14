@@ -1,0 +1,47 @@
+/**
+ * ============================================================
+ *  SCISPACE CENTRAL CONFIGURATION
+ * ------------------------------------------------------------
+ *  Every site-wide value lives here. Edit this one file to
+ *  update the whole website. Values not yet known use clear
+ *  placeholders (#TODO) so they can be filled in later.
+ * ============================================================
+ */
+
+export const config = {
+  /** Official club name */
+  CLUB_NAME: "SciSpace",
+  /** Full official name */
+  CLUB_NAME_FULL: "SciSpace Research Club",
+
+  /** Institution */
+  INSTITUTION: "VIT-AP University",
+
+  /** Core tagline */
+  TAGLINE: "Explore. Research. Innovate. Impact.",
+  TAGLINE_PHRASES: ["Explore.", "Research.", "Innovate.", "Impact."] as const,
+
+  /** Short one-line description (meta + hero) */
+  SHORT_DESCRIPTION:
+    "A student-driven research and technology community at VIT-AP University.",
+
+  /** Recruitment / join form (opens in a new tab). Replace with the real URL. */
+  GOOGLE_FORM_URL: "#TODO",
+
+  /** Social & contact placeholders — replace once real URLs exist. */
+  LINKEDIN_URL: "#TODO",
+  INSTAGRAM_URL: "#TODO",
+  GITHUB_URL: "#TODO",
+  EMAIL: "#TODO",
+
+  /** Path to the official SciSpace logo asset */
+  LOGO_PATH: "/scispace-logo.jpg",
+
+  /** Website meta — update once the real domain is live. */
+  SITE_URL: "https://scispace.in/", // placeholder domain
+  SITE_TITLE: "SciSpace Research Club | VIT-AP University",
+  SITE_DESCRIPTION:
+    "SciSpace Research Club is a student-driven research and technology community at VIT-AP University focused on research, AI, emerging technologies, innovation and collaboration.",
+} as const;
+
+export type SiteConfig = typeof config;

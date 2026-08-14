@@ -1,0 +1,147 @@
+import { Crown, UserRound, Users, UserPlus } from "lucide-react";
+import { motion } from "framer-motion";
+import { Layout } from "../components/Layout";
+import { PageHero } from "../components/PageHero";
+import { JoinSection } from "../components/JoinSection";
+import { SectionHeading } from "../components/SectionHeading";
+import { Reveal, Stagger, itemVariants } from "../components/Reveal";
+import { leadership, teamLeadRoles, memberGroups } from "../data/members";
+
+function PlaceholderAvatar({ variant }: { variant: "blue" | "orange" | "dark" }) {
+  const map = {
+    blue: "bg-brand-blue/15 text-brand-blue-dark",
+    orange: "bg-brand-orange/12 text-brand-orange-dark",
+    dark: "bg-brand-dark/8 text-brand-dark/55",
+  } as const;
+  return (
+    <span
+      className={`grid h-20 w-20 place-items-center rounded-2xl ${map[variant]}`}
+      aria-hidden="true"
+    >
+      <UserRound className="h-9 w-9" />
+    </span>
+  );
+}
+
+function LeaderCard({
+  role,
+  note,
+  icon,
+}: {
+  role: string;
+  note: string;
+  icon: typeof Crown;
+}) {
+  const Icon = icon;
+  return (
+    <motion.div
+      variants={itemVariants}
+      className="card-surface relative flex flex-col items-center gap-4 p-7 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover"
+    >
+      <span className="absolute right-5 top-5 text-brand-orange/80">
+        <Icon className="h-5 w-5" aria-hidden="true" />
+      </span>
+      <PlaceholderAvatar variant="blue" />
+      <div>
+        <h3 className="font-display text-lg font-semibold text-brand-dark">
+          {role}
+        </h3>
+        <p className="mt-1 font-display text-2xl font-bold tracking-tight text-brand-dark/35">
+          TBA
+        </p>
+        <p className="mt-1 text-xs uppercase tracking-widest text-brand-orange">
+          {note}
+        </p>
+      </div>
+    </motion.div>
+  );
+}
+
+export function MembersPage() {
+  return (
+    <Layout>
+      <PageHero
+        eyebrow="People · Team & members"
+        title={
+          <>
+            The students behind{" "}
+            <span className="text-gradient-brand">SciSpace</span>
+          </>
+        }
+        subtitle="Leadership and members will be announced here as the community formalizes. We don't invent names — when people join, they appear here."
+      />
+
+      {/* Leadership */}
+      <section className="bg-white py-24">
+        <div className="container-site">
+          <SectionHeading
+            eyebrow="Leadership"
+            title="Who steers the ship"
+            subtitle="President and Vice President — to be announced."
+          />
+          <Stagger className="mx-auto mt-12 grid max-w-3xl gap-5 sm:grid-cols-2">
+            <LeaderCard role={leadership[0].role} note={leadership[0].note} icon={Crown} />
+            <LeaderCard role={leadership[1].role} note={leadership[1].note} icon={Crown} />
+          </Stagger>
+        </div>
+      </section>
+
+      {/* Team leads */}
+      <section className="bg-brand-canvas py-24">
+        <div className="container-site">
+          <SectionHeading
+            eyebrow="Team leads"
+            title="Leading the eight domains"
+            subtitle="Each domain is guided by a lead. Confirmations land here as teams finalize."
+          />
+          <Stagger className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {teamLeadRoles.map((role) => (
+              <motion.div
+                key={role}
+                variants={itemVariants}
+                className="card-surface flex flex-col items-center gap-3 p-6 text-center transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover"
+              >
+                <PlaceholderAvatar variant="orange" />
+                <p className="text-sm font-semibold leading-snug text-brand-dark">
+                  {role}
+                </p>
+                <p className="text-xs uppercase tracking-widest text-brand-dark/35">
+                  TBA
+                </p>
+              </motion.div>
+            ))}
+          </Stagger>
+        </div>
+      </section>
+
+      {/* Core + members */}
+      <section className="bg-white py-24">
+        <div className="container-site">
+          <div className="grid gap-5 md:grid-cols-2">
+            {memberGroups.slice(2).map((g) => (
+              <Reveal key={g.key}>
+                <div className="card-surface flex h-full flex-col items-center gap-4 p-9 text-center">
+                  <span className="grid h-14 w-14 place-items-center rounded-2xl bg-brand-dark/8 text-brand-dark/60">
+                    {g.key === "core" ? (
+                      <Users className="h-7 w-7" aria-hidden="true" />
+                    ) : (
+                      <UserPlus className="h-7 w-7" aria-hidden="true" />
+                    )}
+                  </span>
+                  <h3 className="font-display text-2xl font-semibold text-brand-dark">
+                    {g.label}
+                  </h3>
+                  <p className="text-sm leading-relaxed text-brand-dark/60">
+                    {g.description}
+                  </p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <JoinSection />
+    </Layout>
+  );
+}
