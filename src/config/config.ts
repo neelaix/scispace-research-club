@@ -55,7 +55,7 @@ export const config = {
   EMAIL: "#TODO",
 
   /** Path to the official SciSpace logo asset */
-  LOGO_PATH: "/scispace-logo.jpg",
+  LOGO_PATH: "./scispace-logo.jpg",
 
   /** Website meta — update once the real domain is live. */
   SITE_URL: "https://scispace.in/", // placeholder domain
