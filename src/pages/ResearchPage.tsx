@@ -1,7 +1,6 @@
 import { ArrowRight, Hourglass, ShieldCheck } from "lucide-react";
 import { motion } from "framer-motion";
-import { config } from "../config/config";
-import { openExternal } from "../lib/open";
+import { Link } from "react-router-dom";
 import { Layout } from "../components/Layout";
 import { PageHero } from "../components/PageHero";
 import { JoinSection } from "../components/JoinSection";
@@ -131,13 +130,12 @@ export function ResearchPage() {
             The Research and AI &amp; Technology teams are the fastest way to
             start doing real work — join SciSpace and find your lab.
           </p>
-          <button
-            type="button"
-            onClick={() => openExternal(config.GOOGLE_FORM_URL, "Join form not yet available. Update GOOGLE_FORM_URL in config.ts.")}
-            className="btn-accent mt-7 px-8 py-3.5 text-sm"
+          <Link
+            to="/join"
+            className="btn-accent mt-7 inline-flex items-center justify-center gap-2 rounded-full px-8 py-3.5 text-sm font-semibold text-white"
           >
             Join SciSpace <ArrowRight className="h-4 w-4" />
-          </button>
+          </Link>
         </div>
       </section>
 

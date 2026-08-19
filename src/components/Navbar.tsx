@@ -3,7 +3,6 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, Menu, X } from "lucide-react";
 import { config } from "../config/config";
-import { openExternal } from "../lib/open";
 import { navLinks } from "../data/nav";
 import { scrollToId } from "../lib/scroll";
 import { Magnetic } from "./Magnetic";
@@ -51,7 +50,7 @@ export function Navbar() {
 
   const goJoin = () => {
     setOpen(false);
-    openExternal(config.GOOGLE_FORM_URL, "Join form not yet available. Update GOOGLE_FORM_URL in config.ts.");
+    navigate("/join");
   };
 
   return (

@@ -2,7 +2,6 @@ import { motion } from "framer-motion";
 import { ArrowRight, ArrowUpRight, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { config } from "../config/config";
-import { openExternal } from "../lib/open";
 import { Layout } from "../components/Layout";
 import { PageHero } from "../components/PageHero";
 import { JoinSection } from "../components/JoinSection";
@@ -105,13 +104,12 @@ export function TeamsPage() {
                 find where your strengths fit — across research, technology,
                 creativity, events and outreach.
               </p>
-              <button
-                type="button"
-                onClick={() => openExternal(config.GOOGLE_FORM_URL, "Join form not yet available. Update GOOGLE_FORM_URL in config.ts.")}
-                className="btn-accent mt-7 px-7 py-3 text-sm"
+              <Link
+                to="/join"
+                className="btn-accent mt-7 inline-flex items-center justify-center gap-2 rounded-full px-7 py-3 text-sm font-semibold text-white"
               >
                 Join SciSpace <ArrowRight className="h-4 w-4" />
-              </button>
+              </Link>
               <p className="mt-4 text-sm text-white/50">
                 Curious who runs these teams?{" "}
                 <Link

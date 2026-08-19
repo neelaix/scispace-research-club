@@ -1,13 +1,12 @@
-import { ArrowRight, ClipboardCheck, MessagesSquare, PartyPopper, Sparkles } from "lucide-react";
+import { ClipboardCheck, MessagesSquare, PartyPopper, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 import { config } from "../config/config";
-import { openExternal } from "../lib/open";
 import { Layout } from "../components/Layout";
 import { PageHero } from "../components/PageHero";
 import { JoinSection } from "../components/JoinSection";
 import { SectionHeading } from "../components/SectionHeading";
+import { SciSpaceApplicationForm } from "../components/SciSpaceApplicationForm";
 import { Reveal, Stagger, itemVariants } from "../components/Reveal";
-import { Magnetic } from "../components/Magnetic";
 
 const profiles = [
   "researcher",
@@ -79,23 +78,10 @@ export function JoinPage() {
               or simply curious
             </motion.span>
           </Stagger>
-
-          <Reveal delay={0.1} className="mt-14 text-center">
-            <Magnetic>
-              <button
-                type="button"
-                onClick={() => openExternal(config.GOOGLE_FORM_URL, "Join form not yet available. Update GOOGLE_FORM_URL in config.ts.")}
-                className="btn-accent px-10 py-4 text-base"
-              >
-                Join SciSpace <ArrowRight className="h-5 w-5" />
-              </button>
-            </Magnetic>
-            <p className="mt-4 text-xs uppercase tracking-widest text-brand-dark/40">
-              Opens in a new tab · {config.INSTITUTION} students
-            </p>
-          </Reveal>
         </div>
       </section>
+
+      <SciSpaceApplicationForm />
 
       {/* After joining */}
       <section className="bg-brand-mist py-24">

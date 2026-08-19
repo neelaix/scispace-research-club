@@ -1,10 +1,11 @@
 import { ArrowRight, Sparkles } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { config } from "../config/config";
-import { openExternal } from "../lib/open";
 import { Magnetic } from "./Magnetic";
 import { Reveal } from "./Reveal";
 
 export function JoinSection() {
+  const navigate = useNavigate();
   return (
     <section id="join" className="relative overflow-hidden bg-brand-dark py-24 text-white md:py-36">
       <div aria-hidden="true" className="absolute inset-0 bg-brand-soft opacity-90" />
@@ -49,7 +50,7 @@ export function JoinSection() {
             <Magnetic>
               <button
                 type="button"
-                onClick={() => openExternal(config.GOOGLE_FORM_URL, "Join form not yet available. Update GOOGLE_FORM_URL in config.ts.")}
+                onClick={() => navigate("/join")}
                 className="btn-accent px-9 py-4 text-base shadow-[0_16px_44px_-12px_rgba(253,128,44,0.65)]"
               >
                 Join SciSpace <ArrowRight className="h-5 w-5" />

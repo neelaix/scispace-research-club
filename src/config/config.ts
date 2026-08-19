@@ -8,6 +8,26 @@
  * ============================================================
  */
 
+/**
+ * ============================================================
+ *  APPLICATION FORM BACKEND (Google Apps Script Web App)
+ * ------------------------------------------------------------
+ *  The "Join SciSpace" application form POSTs to this Apps
+ *  Script Web App, which writes rows into Google Sheets.
+ *
+ *  👉 Paste your deployed Web App URL here (the /exec URL):
+ *       https://script.google.com/macros/s/XXXXXXXX/exec
+ *
+ *  The Apps Script must accept exactly these POST fields:
+ *       fullName, registrationNumber, email, phone,
+ *       skills, linkedin, github
+ *  (The chosen team/domain is kept in the frontend review step
+ *   and is NOT sent yet — see SciSpaceApplicationForm.tsx.)
+ * ============================================================
+ */
+export const GOOGLE_APPS_SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbxcI761Txew34lwy6LLjZSMKHxGaM4ubp1_RI6rRXIvq8iW_ihJxU9UEFZdaDNKpSHx_g/exec";
+
 export const config = {
   /** Official club name */
   CLUB_NAME: "SciSpace",

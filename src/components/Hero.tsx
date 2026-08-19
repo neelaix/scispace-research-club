@@ -1,7 +1,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, ChevronDown } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { config } from "../config/config";
-import { openExternal } from "../lib/open";
 import { AnimatedBackground } from "./AnimatedBackground";
 import { Magnetic } from "./Magnetic";
 import { scrollToId } from "../lib/scroll";
@@ -21,8 +21,9 @@ const marqueeWords = [
 
 export function Hero() {
   const reduce = useReducedMotion();
+  const navigate = useNavigate();
 
-  const goJoin = () => openExternal(config.GOOGLE_FORM_URL, "Join form not yet available. Update GOOGLE_FORM_URL in config.ts.");
+  const goJoin = () => navigate("/join");
 
   return (
     <section id="top" className="relative flex min-h-[100svh] flex-col overflow-hidden">
