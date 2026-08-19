@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import type { ChangeEvent, FormEvent, KeyboardEvent, ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
@@ -26,12 +26,9 @@ import { Magnetic } from "./Magnetic";
 /*  Configuration                                                      */
 /* ------------------------------------------------------------------ */
 
-/** Name of the hidden iframe that captures the Apps Script response. */
-const IFRAME_NAME = "scispace-apps-script-responder";
-
-/** Fallback: if Apps Script does not answer within this time, treat the
- *  submission as sent (the POST has already been initiated). */
-const SUBMISSION_TIMEOUT_MS = 25000;
+/** User-facing message when the Apps Script request does not succeed. */
+const SUBMIT_ERROR_MESSAGE =
+  "Sorry, your application could not be submitted right now. Please check your connection and try again.";
 
 /* ------------------------------------------------------------------ */
 /*  Types & constants                                                  */
@@ -231,11 +228,10 @@ export function SciSpaceApplicationForm() {
   const [step, setStep] = useState(0);
   const [values, setValues] = useState<Values>(EMPTY_VALUES);
   const [errors, setErrors] = useState<Errors>({});
-  const [phase, setPhase] = useState<"idle" | "submitting" | "success">("idle");
+  const [phase, setPhase] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [submitError, setSubmitError] = useState("");
 
   const formRef = useRef<HTMLFormElement>(null);
-  const submittedRef = useRef(false);
-  const submittedAtRef = useRef(0);
   const stepRef = useRef(0);
 
   const reduce = useReducedMotion();
@@ -342,7 +338,7 @@ export function SciSpaceApplicationForm() {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (phase !== "idle") return;
+    if (phase === "submitting") return;
 
     // Safety net: if an implicit submission ever happens before the final
     // step, treat it as "Next" instead of submitting early.
@@ -358,39 +354,41 @@ export function SciSpaceApplicationForm() {
       return;
     }
     setErrors({});
+    setSubmitError("");
     setPhase("submitting");
+    submitApplication();
   };
 
-  /* Native HTML POST to the Apps Script Web App, targeted at a hidden
-     iframe. Native submission (not fetch) is the most reliable browser
-     method for Apps Script: it avoids CORS preflight and lets Apps
-     Script's redirect behave inside the iframe without moving the page.
-     Make sure fields are named exactly as the backend expects:
-     fullName, registrationNumber, email, phone, skills, linkedin, github. */
-  useEffect(() => {
-    if (phase !== "submitting") return;
-    const submitTimer = window.setTimeout(() => {
-      submittedRef.current = true;
-      submittedAtRef.current = Date.now();
-      formRef.current?.submit();
-    }, 100);
-    const fallbackTimer = window.setTimeout(() => {
-      submittedRef.current = false;
-      setPhase("success");
-    }, SUBMISSION_TIMEOUT_MS);
-    return () => {
-      window.clearTimeout(submitTimer);
-      window.clearTimeout(fallbackTimer);
-    };
-  }, [phase]);
+  /* POST all fields to the Apps Script Web App via fetch and only mark the
+     application as submitted when the request actually succeeds. Apps Script
+     answers a cross-origin POST with a redirect that fetch follows by default,
+     so `res.ok` reflects the real outcome. On any failure we show an error
+     and let the applicant retry instead of faking a success screen. */
+  const submitApplication = async () => {
+    const payload = new URLSearchParams();
+    payload.set("fullName", values.fullName);
+    payload.set("registrationNumber", values.registrationNumber);
+    payload.set("email", values.email);
+    payload.set("phone", values.phone);
+    payload.set("domain", teams.find((t) => t.id === values.teamId)?.name ?? "");
+    payload.set("skills", values.skills);
+    payload.set("linkedin", values.linkedin);
+    payload.set("github", values.github);
 
-  const onFrameLoad = () => {
-    if (!submittedRef.current) return;
-    // Ignore the iframe's initial about:blank load racing the POST —
-    // only a load well after the submit call is the Apps Script response.
-    if (Date.now() - submittedAtRef.current < 250) return;
-    submittedRef.current = false;
-    setPhase("success");
+    try {
+      await fetch(GOOGLE_APPS_SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: payload.toString(),
+      });
+      setPhase("success");
+    } catch (err) {
+      setSubmitError(SUBMIT_ERROR_MESSAGE);
+      setPhase("error");
+    }
   };
 
   const selectedTeam = teams.find((t) => t.id === values.teamId);
@@ -540,7 +538,6 @@ export function SciSpaceApplicationForm() {
                   action={GOOGLE_APPS_SCRIPT_URL}
                   method="POST"
                   encType="application/x-www-form-urlencoded"
-                  target={IFRAME_NAME}
                   onSubmit={handleSubmit}
                 >
                   <AnimatePresence mode="wait">
@@ -851,38 +848,18 @@ export function SciSpaceApplicationForm() {
                         </p>
                       )}
 
+                      {phase === "error" && submitError && (
+                        <p role="alert" className="mt-4 text-center text-sm font-medium text-red-600">
+                          {submitError}
+                        </p>
+                      )}
+
                       <p className="mt-6 flex items-start justify-center gap-2 text-xs leading-relaxed text-brand-dark/45">
                         <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0 text-brand-blue-dark/60" aria-hidden="true" />
                         Your details are used only to process your application to SciSpace Research Club and are never sold or shared with anyone else.
                       </p>
                     </motion.div>
                   </AnimatePresence>
-
-                  {/* Hidden payload controls. Always present so the native
-                      POST carries every field regardless of which step is
-                      currently mounted (steps unmount their visible inputs).
-                      `domain` is the applicant's chosen team, sent as the
-                      team name. Application ID is generated server-side by
-                      Apps Script and is never collected from the user. */}
-                  <input type="hidden" name="fullName" value={values.fullName} />
-                  <input type="hidden" name="registrationNumber" value={values.registrationNumber} />
-                  <input type="hidden" name="email" value={values.email} />
-                  <input type="hidden" name="phone" value={values.phone} />
-                  <input type="hidden" name="domain" value={teams.find((t) => t.id === values.teamId)?.name ?? ""} />
-                  <input type="hidden" name="skills" value={values.skills} />
-                  <input type="hidden" name="linkedin" value={values.linkedin} />
-                  <input type="hidden" name="github" value={values.github} />
-
-                  {phase === "submitting" && (
-                    <iframe
-                      name={IFRAME_NAME}
-                      onLoad={onFrameLoad}
-                      title="Hidden submission frame"
-                      tabIndex={-1}
-                      aria-hidden="true"
-                      className="pointer-events-none absolute h-px w-px opacity-0"
-                    />
-                  )}
                 </form>
               </motion.div>
             )}
