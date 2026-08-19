@@ -35,8 +35,6 @@ Edit this single file to change site-wide values:
 CLUB_NAME, CLUB_NAME_FULL, INSTITUTION, TAGLINE, SHORT_DESCRIPTION
 GOOGLE_APPS_SCRIPT_URL  // ← the JOIN SCISPACE application form backend
                         //   (Google Apps Script Web App /exec URL)
-GOOGLE_FORM_URL         // legacy external Google Form, used only as the
-                        // fallback register link on event cards
 LINKEDIN_URL, INSTAGRAM_URL, GITHUB_URL, EMAIL
 LOGO_PATH         // official SciSpace logo asset
 ```
@@ -115,7 +113,9 @@ To add an event, append to `upcomingEvents`/`ongoingInitiatives`/`pastEvents`:
   description: "...",
   status: "upcoming",
   badge: "Upcoming",
-  registerUrl: "https://forms.gle/...", // optional, falls back to GOOGLE_FORM_URL
+  registerUrl: "https://example.com/register", // optional; when set, the Register
+                                                // button opens it in a new tab. When
+                                                // omitted it routes to /#/join.
   themes: ["...", "..."],               // optional
 }
 ```

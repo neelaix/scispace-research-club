@@ -19,10 +19,9 @@
  *       https://script.google.com/macros/s/XXXXXXXX/exec
  *
  *  The Apps Script must accept exactly these POST fields:
- *       fullName, registrationNumber, email, phone,
+ *       fullName, registrationNumber, email, phone, domain,
  *       skills, linkedin, github
- *  (The chosen team/domain is kept in the frontend review step
- *   and is NOT sent yet — see SciSpaceApplicationForm.tsx.)
+ *  (`domain` is the applicant's chosen team, sent as the team name.)
  * ============================================================
  */
 export const GOOGLE_APPS_SCRIPT_URL =
@@ -44,9 +43,6 @@ export const config = {
   /** Short one-line description (meta + hero) */
   SHORT_DESCRIPTION:
     "A student-driven research and technology community at VIT-AP University.",
-
-  /** Recruitment / join form (opens in a new tab). Replace with the real URL. */
-  GOOGLE_FORM_URL: "#TODO",
 
   /** Social & contact placeholders — replace once real URLs exist. */
   LINKEDIN_URL: "#TODO",

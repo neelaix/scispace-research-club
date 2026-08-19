@@ -1,13 +1,19 @@
 import { ArrowRight, Clapperboard, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { config } from "../config/config";
 import { openExternal } from "../lib/open";
 import type { ClubEvent } from "../data/events";
 import { Magnetic } from "./Magnetic";
 
 export function EventCard({ event }: { event: ClubEvent }) {
   const navigate = useNavigate();
-  const registerUrl = event.registerUrl || config.GOOGLE_FORM_URL;
+  const registerUrl = event.registerUrl;
+  const openRegister = () => {
+    if (registerUrl && !registerUrl.startsWith("#TODO")) {
+      openExternal(registerUrl);
+      return;
+    }
+    navigate("/join");
+  };
   return (
     <article className="group relative overflow-hidden rounded-3xl border border-brand-dark/8 bg-brand-dark text-white shadow-card-hover">
       {/* backdrop */}
@@ -64,7 +70,7 @@ export function EventCard({ event }: { event: ClubEvent }) {
           <Magnetic>
             <button
               type="button"
-              onClick={() => openExternal(registerUrl, "Register form not yet available. Update the event's registerUrl or GOOGLE_FORM_URL in config.ts.")}
+              onClick={openRegister}
               className="btn-accent px-6 py-3 text-sm"
             >
               Register <ArrowRight className="h-4 w-4" />
