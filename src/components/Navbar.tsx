@@ -6,6 +6,7 @@ import { config } from "../config/config";
 import { navLinks } from "../data/nav";
 import { scrollToId } from "../lib/scroll";
 import { Magnetic } from "./Magnetic";
+import { ThemeToggle } from "./ThemeToggle";
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -108,6 +109,9 @@ export function Navbar() {
 
           {/* CTA + hamburger */}
           <div className="flex items-center gap-2">
+            <span className="hidden lg:block">
+              <ThemeToggle />
+            </span>
             <Magnetic className="hidden lg:block">
               <button
                 type="button"
@@ -155,6 +159,9 @@ export function Navbar() {
                   <ArrowRight className="h-5 w-5 text-brand-blue" />
                 </motion.button>
               ))}
+              <div className="pt-4">
+                <ThemeToggle variant="mobile" />
+              </div>
               <motion.button
                 type="button"
                 initial={{ opacity: 0, y: 10 }}

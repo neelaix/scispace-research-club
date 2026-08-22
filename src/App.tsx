@@ -7,6 +7,9 @@ import { TeamsPage } from "./pages/TeamsPage";
 import { EventsPage } from "./pages/EventsPage";
 import { MembersPage } from "./pages/MembersPage";
 import { JoinPage } from "./pages/JoinPage";
+import { InterstellarBookingPage } from "./pages/InterstellarBookingPage";
+import { BookingConfirmationPage } from "./pages/BookingConfirmationPage";
+import { AdminPage } from "./pages/AdminPage";
 
 export default function App() {
   return (
@@ -20,6 +23,10 @@ export default function App() {
         <Route path="/events" element={<EventsPage />} />
         <Route path="/members" element={<MembersPage />} />
         <Route path="/join" element={<JoinPage />} />
+        <Route path="/booking" element={<InterstellarBookingPage />} />
+        <Route path="/booking/interstellar" element={<InterstellarBookingPage />} />
+        <Route path="/booking/confirmation/:bookingId" element={<BookingConfirmationPage />} />
+        <Route path="/admin" element={<AdminPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>

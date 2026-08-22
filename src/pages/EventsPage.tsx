@@ -1,4 +1,4 @@
-import { ArrowRight, CalendarX2, Hourglass, Layers } from "lucide-react";
+import { ArrowRight, CalendarX2, Hourglass, Layers, Ticket, Info } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Layout } from "../components/Layout";
@@ -77,6 +77,28 @@ export function EventsPage() {
               </Reveal>
             ))}
           </div>
+
+          {featured && featured.title === "Interstellar" && (
+            <Reveal delay={0.08} className="mt-8">
+              <div className="rounded-3xl border border-brand-dark/10 bg-white p-7 shadow-card md:p-8">
+                <div className="flex items-center gap-3">
+                  <Ticket className="h-5 w-5 text-brand-orange" />
+                  <h3 className="font-display text-lg font-semibold text-brand-dark">Ticketing — Interstellar</h3>
+                  <span className="chip bg-brand-dark text-white">₹25 per person</span>
+                </div>
+                <p className="mt-3 text-sm leading-relaxed text-brand-dark/60">
+                  Paid event — No discounted group ticket. Group booking means one booking can contain multiple attendees. Pricing: 1=₹25 · 2=₹50 · 3=₹75 · 5=₹125 · 10=₹250. Formula: <span className="font-mono font-semibold">TOTAL = ATTENDEES × ₹25</span>. General Admission · Open Seating — Choose any available seat at the venue. No seat map, no seat numbers, no reserved seating, no attendee limit.
+                </p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <span className="chip bg-emerald-100 text-emerald-700"><Info className="h-3.5 w-3.5" /> Open Seating</span>
+                  <span className="chip bg-brand-blue/10 text-brand-blue-dark">General Admission</span>
+                </div>
+                <Link to="/booking" className="btn-accent mt-6 inline-flex px-6 py-3 text-sm">
+                  Book Tickets — Interstellar <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+            </Reveal>
+          )}
 
           {featured && featured.themes && (
             <Reveal delay={0.1} className="mt-8">

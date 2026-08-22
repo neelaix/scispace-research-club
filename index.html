@@ -51,6 +51,21 @@
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/scispace-logo.jpg" />
+    <!-- Early theme init — prevents flash, respects system + persist, default dark -->
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem("scispace-theme");
+          var sysDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+          var theme = stored || (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+          if (!stored) theme = "dark"; // default premium cinematic
+          // If user had no pref but system is light, respect it
+          if (!stored && window.matchMedia("(prefers-color-scheme: light)").matches) theme = "light";
+          document.documentElement.classList.toggle("dark", theme === "dark");
+          document.documentElement.style.colorScheme = theme === "dark" ? "dark" : "light";
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

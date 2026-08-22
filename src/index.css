@@ -5,6 +5,22 @@
 @layer base {
   :root {
     color-scheme: light;
+    /* Light theme tokens — WCAG AA contrast */
+    --bg-canvas: #F6F8FA;
+    --bg-white: #FFFFFF;
+    --bg-mist: #EAF4F8;
+    --text-primary: #1C1C24;
+    --text-secondary: #2A2A34;
+    --border-subtle: rgba(42,42,52,0.08);
+  }
+  .dark {
+    color-scheme: dark;
+    --bg-canvas: #121216;
+    --bg-white: #1E1E24;
+    --bg-mist: #23232D;
+    --text-primary: #F2F2F5;
+    --text-secondary: #C8C8D0;
+    --border-subtle: rgba(255,255,255,0.08);
   }
 
   html {
@@ -12,9 +28,13 @@
     -webkit-text-size-adjust: 100%;
   }
 
+  /* Default is dark premium cinematic — override via .light removal handled in JS */
   body {
-    @apply bg-brand-canvas text-brand-dark font-sans antialiased;
+    @apply font-sans antialiased;
+    background: var(--bg-canvas);
+    color: var(--text-primary);
     overflow-x: hidden;
+    transition: background-color 0.25s ease, color 0.25s ease;
   }
 
   ::selection {
@@ -77,6 +97,33 @@
     @apply chip uppercase tracking-widest2 text-xs;
   }
 }
+
+/* Dark theme overrides — ensure every page/card/form works in both themes with WCAG contrast */
+.dark .bg-white { background-color: var(--bg-white) !important; }
+.dark .bg-white\/80 { background-color: rgba(30,30,36,0.8) !important; }
+.dark .bg-white\/70 { background-color: rgba(30,30,36,0.7) !important; }
+.dark .bg-white\/95 { background-color: rgba(30,30,36,0.95) !important; }
+.dark .bg-brand-canvas { background-color: var(--bg-canvas) !important; }
+.dark .bg-brand-mist { background-color: var(--bg-mist) !important; }
+.dark .bg-brand-mist\/60 { background-color: rgba(35,35,45,0.6) !important; }
+.dark .bg-brand-dark { background-color: #1C1C24 !important; color: #F2F2F5 !important; }
+.dark .text-brand-dark { color: var(--text-primary) !important; }
+.dark .text-brand-dark\/60 { color: rgba(242,242,245,0.6) !important; }
+.dark .text-brand-dark\/65 { color: rgba(242,242,245,0.65) !important; }
+.dark .text-brand-dark\/50 { color: rgba(242,242,245,0.5) !important; }
+.dark .text-brand-dark\/40 { color: rgba(242,242,245,0.4) !important; }
+.dark .text-brand-dark\/35 { color: rgba(242,242,245,0.35) !important; }
+.dark .border-brand-dark\/8 { border-color: rgba(255,255,255,0.08) !important; }
+.dark .border-brand-dark\/10 { border-color: rgba(255,255,255,0.1) !important; }
+.dark .border-brand-dark\/12 { border-color: rgba(255,255,255,0.12) !important; }
+.dark .border-brand-dark\/15 { border-color: rgba(255,255,255,0.15) !important; }
+.dark .border-black\/\[0\.05\] { border-color: rgba(255,255,255,0.05) !important; }
+.dark .card-surface { background-color: var(--bg-white) !important; border-color: rgba(255,255,255,0.06) !important; }
+.dark input, .dark textarea, .dark select { background-color: #25252e !important; color: #F2F2F5 !important; border-color: rgba(255,255,255,0.12) !important; }
+.dark input::placeholder, .dark textarea::placeholder { color: rgba(242,242,245,0.35) !important; }
+.dark .bg-brand-blue\/10 { background-color: rgba(117,193,217,0.12) !important; }
+.dark .bg-brand-orange\/12 { background-color: rgba(253,128,44,0.14) !important; }
+.dark .shadow-card { box-shadow: 0 1px 2px rgba(0,0,0,0.25), 0 8px 24px rgba(0,0,0,0.35) !important; }
 
 /* Hide horizontal scroll from any stray element */
 html,

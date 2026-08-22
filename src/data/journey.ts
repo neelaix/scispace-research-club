@@ -52,7 +52,7 @@ export const journeySteps: JourneyStep[] = [
     phase: "What's next",
     title: "Research Reels",
     description:
-      "Launching soon — a research-oriented movie screening and discussion series. Episode 01: Ex Machina.",
+      "Launching soon — a research-oriented movie screening and discussion series. Episode 01: Interstellar — A SciSpace Research Club Movie Experience exploring space, astrophysics, relativity and discovery.",
     icon: Sparkles,
     status: "planned",
   },

@@ -7,7 +7,12 @@ import { Magnetic } from "./Magnetic";
 export function EventCard({ event }: { event: ClubEvent }) {
   const navigate = useNavigate();
   const registerUrl = event.registerUrl;
+  const isInterstellar = event.title.toLowerCase() === "interstellar";
   const openRegister = () => {
+    if (isInterstellar) {
+      navigate("/booking");
+      return;
+    }
     if (registerUrl && !registerUrl.startsWith("#TODO")) {
       openExternal(registerUrl);
       return;
@@ -73,17 +78,22 @@ export function EventCard({ event }: { event: ClubEvent }) {
               onClick={openRegister}
               className="btn-accent px-6 py-3 text-sm"
             >
-              Register <ArrowRight className="h-4 w-4" />
+              {isInterstellar ? "Book Tickets — ₹25" : "Register"} <ArrowRight className="h-4 w-4" />
             </button>
           </Magnetic>
           <button
             type="button"
-            onClick={() => navigate("/events")}
+            onClick={() => navigate(isInterstellar ? "/booking" : "/events")}
             className="btn border border-white/15 bg-white/5 px-6 py-3 text-sm text-white backdrop-blur transition-colors hover:border-brand-blue/60 hover:text-brand-blue"
           >
-            View Event
+            {isInterstellar ? "View Details" : "View Event"}
           </button>
         </div>
+        {isInterstellar && (
+          <p className="mt-4 text-xs leading-relaxed text-white/45">
+            General Admission · Open Seating · Open Seating — Choose any available seat at the venue.
+          </p>
+        )}
       </div>
     </article>
   );

@@ -5,11 +5,14 @@ import "@fontsource-variable/inter";
 import "@fontsource-variable/space-grotesk";
 import "./index.css";
 import App from "./App";
+import { ThemeProvider } from "./context/ThemeContext";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <HashRouter>
-      <App />
-    </HashRouter>
+    <ThemeProvider>
+      <HashRouter>
+        <App />
+      </HashRouter>
+    </ThemeProvider>
   </React.StrictMode>
 );
