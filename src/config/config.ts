@@ -44,9 +44,9 @@ export const config = {
   SHORT_DESCRIPTION:
     "A student-driven research and technology community at VIT-AP University.",
 
-  /** Social & contact placeholders — replace once real URLs exist. */
-  LINKEDIN_URL: "#TODO",
-  INSTAGRAM_URL: "#TODO",
+  /** Social & contact */
+  LINKEDIN_URL: "https://www.linkedin.com/company/scispace-research-club/",
+  INSTAGRAM_URL: "https://www.instagram.com/scispace_vitap/",
   GITHUB_URL: "#TODO",
   EMAIL: "#TODO",
 
