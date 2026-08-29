@@ -17,8 +17,8 @@ export const founders: Founder[] = [
   {
     id: "mithinti-ramani",
     name: "Mithinti Ramani",
-    role: "Founder",
-    note: "SciSpace Research Club — Founder",
+    role: "Founder, Campus Ambassador & Star Student",
+    note: "Founder • Campus Ambassador • Star Student",
     initials: "MR",
   },
 ];

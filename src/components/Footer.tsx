@@ -132,7 +132,24 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-14 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-6 text-xs text-white/40 sm:flex-row">
+        <div className="mt-8 rounded-2xl border border-white/10 bg-white/[0.04] px-6 py-5">
+          <p className="text-center text-xs font-semibold uppercase tracking-widest2 text-white/40">Founders</p>
+          <div className="mt-3 flex flex-col items-center justify-center gap-2 text-center text-sm sm:flex-row sm:gap-6">
+            <span className="inline-flex flex-wrap items-center justify-center gap-2">
+              <span className="font-display font-semibold text-white">Manda Neelaksh</span>
+              <span className="text-white/50">—</span>
+              <span className="text-white/70">Founder</span>
+            </span>
+            <span className="hidden h-4 w-px bg-white/15 sm:block" aria-hidden="true" />
+            <span className="inline-flex flex-wrap items-center justify-center gap-2">
+              <span className="font-display font-semibold text-white">Mithinti Ramani</span>
+              <span className="text-white/50">—</span>
+              <span className="text-white/70">Founder, Campus Ambassador &amp; Star Student</span>
+            </span>
+          </div>
+        </div>
+
+        <div className="mt-6 flex flex-col items-center justify-between gap-3 border-t border-white/10 pt-6 text-xs text-white/40 sm:flex-row">
           <p>
             © {new Date().getFullYear()} {config.CLUB_NAME_FULL}. All rights
             reserved.

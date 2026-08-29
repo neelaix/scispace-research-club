@@ -46,7 +46,7 @@ function FounderCard({
         <span className="font-display text-xl font-bold tracking-tight">{initials}</span>
       </span>
       <div>
-        <p className="inline-flex items-center gap-2 rounded-full bg-brand-orange px-3 py-1 text-xs font-bold uppercase tracking-widest text-white">
+        <p className="inline-flex flex-wrap items-center justify-center gap-2 rounded-full bg-brand-orange px-3 py-1 text-center text-xs font-bold uppercase tracking-widest text-white">
           {role}
         </p>
         <h3 className="mt-3 font-display text-xl font-bold tracking-tight text-brand-dark">
@@ -122,7 +122,12 @@ export function MembersPage() {
           />
           <Stagger className="mx-auto mt-12 grid max-w-3xl gap-5 sm:grid-cols-2">
             <FounderCard name="Manda Neelaksh" role="Founder" note="Founder — SciSpace Research Club" initials="MN" />
-            <FounderCard name="Mithinti Ramani" role="Founder" note="Founder — SciSpace Research Club" initials="MR" />
+            <FounderCard
+              name="Mithinti Ramani"
+              role="Founder, Campus Ambassador & Star Student"
+              note="Founder • Campus Ambassador • Star Student"
+              initials="MR"
+            />
           </Stagger>
         </div>
       </section>

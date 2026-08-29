@@ -33,8 +33,8 @@ export function FoundersSection() {
                 <span className="font-display text-2xl font-bold tracking-tight">{f.initials}</span>
               </span>
               <div>
-                <p className="inline-flex items-center gap-2 rounded-full bg-brand-orange px-3 py-1 text-xs font-bold uppercase tracking-widest text-white">
-                  <Crown className="h-3.5 w-3.5" aria-hidden="true" /> {f.role}
+                <p className="inline-flex flex-wrap items-center justify-center gap-2 rounded-full bg-brand-orange px-3 py-1 text-center text-xs font-bold uppercase tracking-widest text-white">
+                  <Crown className="h-3.5 w-3.5 shrink-0" aria-hidden="true" /> {f.role}
                 </p>
                 <h3 className="mt-3 font-display text-2xl font-bold tracking-tight text-brand-dark">
                   {f.name}

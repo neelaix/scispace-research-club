@@ -130,8 +130,8 @@ export function AboutPage() {
           />
           <div className="mx-auto mt-12 grid max-w-3xl gap-6 sm:grid-cols-2">
             {[
-              { name: "Manda Neelaksh", initials: "MN" },
-              { name: "Mithinti Ramani", initials: "MR" },
+              { name: "Manda Neelaksh", initials: "MN", role: "Founder", note: "SciSpace Research Club — Founder" },
+              { name: "Mithinti Ramani", initials: "MR", role: "Founder, Campus Ambassador & Star Student", note: "Founder • Campus Ambassador • Star Student" },
             ].map((f) => (
               <div
                 key={f.name}
@@ -144,9 +144,9 @@ export function AboutPage() {
                   <span className="font-display text-2xl font-bold">{f.initials}</span>
                 </span>
                 <div>
-                  <p className="inline-flex rounded-full bg-brand-orange px-3 py-1 text-xs font-bold uppercase tracking-widest text-white">Founder</p>
+                  <p className="inline-flex flex-wrap justify-center rounded-full bg-brand-orange px-3 py-1 text-center text-xs font-bold uppercase tracking-widest text-white">{f.role}</p>
                   <h3 className="mt-3 font-display text-xl font-bold text-brand-dark">{f.name}</h3>
-                  <p className="mt-1 text-xs font-medium uppercase tracking-widest text-brand-dark/50">SciSpace Research Club — Founder</p>
+                  <p className="mt-1 text-xs font-medium uppercase tracking-widest text-brand-dark/50">{f.note}</p>
                   <a href="mailto:spaceresearch.club@vitap.ac.in" className="mt-3 inline-flex text-xs font-semibold text-brand-blue-dark underline decoration-brand-blue/20 underline-offset-4 hover:text-brand-orange-dark">
                     spaceresearch.club@vitap.ac.in
                   </a>
