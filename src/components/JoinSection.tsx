@@ -60,6 +60,12 @@ export function JoinSection() {
               {config.INSTITUTION} students · no prior experience needed
             </span>
           </div>
+          <p className="mt-6 text-sm text-white/60">
+            You can still join — email us at{" "}
+            <a href="mailto:spaceresearch.club@vitap.ac.in" className="font-semibold text-brand-orange underline decoration-white/20 underline-offset-4 hover:text-white">
+              spaceresearch.club@vitap.ac.in
+            </a>
+          </p>
         </Reveal>
       </div>
     </section>

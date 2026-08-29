@@ -46,16 +46,18 @@ export const upcomingEvents: ClubEvent[] = [
   },
 ];
 
-export const ongoingInitiatives: ClubEvent[] = [
+export const ongoingInitiatives: ClubEvent[] = [];
+
+export const pastEvents: ClubEvent[] = [
   {
     id: "recruitment-2026",
     series: "Community",
     title: "Member Recruitment",
     tags: ["Research", "AI", "Technology", "Leadership"],
     description:
-      "SciSpace opened recruitment for students interested in research, AI, technology, creativity, events, outreach and management. Onboarding continues as the community takes shape.",
-    status: "ongoing",
-    badge: "Ongoing",
+      "Recruitment completed — we opened applications for students passionate about research, AI, technology, creativity, events, outreach and management. Selected members have been onboarded. Missed it? You can still join — email us at spaceresearch.club@vitap.ac.in or visit /join.",
+    status: "past",
+    badge: "Completed",
   },
   {
     id: "team-selection-2026",
@@ -63,9 +65,9 @@ export const ongoingInitiatives: ClubEvent[] = [
     title: "Team Selection",
     tags: ["Interviews", "Teams"],
     description:
-      "We conducted interviews to understand students' interests, strengths and capabilities, and to assign suitable responsibilities across our eight domains.",
-    status: "ongoing",
-    badge: "In progress",
+      "We interviewed applicants to understand their interests, strengths and capabilities and assigned responsibilities across our eight domains. Teams are now active.",
+    status: "past",
+    badge: "Completed",
   },
   {
     id: "community-building",
@@ -73,14 +75,10 @@ export const ongoingInitiatives: ClubEvent[] = [
     title: "Community Building",
     tags: ["Network", "Collaboration"],
     description:
-      "We welcomed selected students into the SciSpace community and established communication channels for future coordination.",
-    status: "ongoing",
-    badge: "In progress",
+      "Community building completed — new members have been welcomed into SciSpace and communication channels are live. Want to join? Reach out at spaceresearch.club@vitap.ac.in.",
+    status: "past",
+    badge: "Completed",
   },
-];
-
-export const pastEvents: ClubEvent[] = [
-  // Nothing has happened yet — do not fabricate past events.
 ];
 
 export const allEvents: ClubEvent[] = [

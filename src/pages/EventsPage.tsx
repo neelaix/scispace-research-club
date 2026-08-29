@@ -1,4 +1,4 @@
-import { ArrowRight, CalendarX2, Hourglass, Layers, Ticket, Info } from "lucide-react";
+import { ArrowRight, CalendarX2, Hourglass, Layers } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Layout } from "../components/Layout";
@@ -70,35 +70,13 @@ export function EventsPage() {
             subtitle="Planned, not fabricated — we list an event only when it's real."
             align="left"
           />
-          <div className="mt-10 grid gap-6 lg:grid-cols-2">
+          <div className="mt-10 grid gap-6">
             {upcomingEvents.map((ev) => (
               <Reveal key={ev.id}>
                 <EventCard event={ev} />
               </Reveal>
             ))}
           </div>
-
-          {featured && featured.title === "Interstellar" && (
-            <Reveal delay={0.08} className="mt-8">
-              <div className="rounded-3xl border border-brand-dark/10 bg-white p-7 shadow-card md:p-8">
-                <div className="flex items-center gap-3">
-                  <Ticket className="h-5 w-5 text-brand-orange" />
-                  <h3 className="font-display text-lg font-semibold text-brand-dark">Ticketing — Interstellar</h3>
-                  <span className="chip bg-brand-dark text-white">₹25 per person</span>
-                </div>
-                <p className="mt-3 text-sm leading-relaxed text-brand-dark/60">
-                  Paid event — No discounted group ticket. Group booking means one booking can contain multiple attendees. Pricing: 1=₹25 · 2=₹50 · 3=₹75 · 5=₹125 · 10=₹250. Formula: <span className="font-mono font-semibold">TOTAL = ATTENDEES × ₹25</span>. General Admission · Open Seating — Choose any available seat at the venue. No seat map, no seat numbers, no reserved seating, no attendee limit.
-                </p>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <span className="chip bg-emerald-100 text-emerald-700"><Info className="h-3.5 w-3.5" /> Open Seating</span>
-                  <span className="chip bg-brand-blue/10 text-brand-blue-dark">General Admission</span>
-                </div>
-                <Link to="/booking" className="btn-accent mt-6 inline-flex px-6 py-3 text-sm">
-                  Book Tickets — Interstellar <ArrowRight className="h-4 w-4" />
-                </Link>
-              </div>
-            </Reveal>
-          )}
 
           {featured && featured.themes && (
             <Reveal delay={0.1} className="mt-8">
@@ -135,11 +113,26 @@ export function EventsPage() {
             subtitle="The work that keeps the community moving between events."
             align="left"
           />
-          <Stagger className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {ongoingInitiatives.map((ev) => (
-              <InitiativeCard key={ev.id} event={ev} />
-            ))}
-          </Stagger>
+          {ongoingInitiatives.length === 0 ? (
+            <Reveal delay={0.08}>
+              <div className="mt-10 rounded-3xl border border-brand-dark/10 bg-white p-8 text-center shadow-card">
+                <p className="font-display text-lg font-semibold text-brand-dark">Onboarding completed</p>
+                <p className="mx-auto mt-2 max-w-2xl text-sm leading-relaxed text-brand-dark/60">
+                  Member Recruitment, Team Selection and Community Building are now <span className="font-semibold text-brand-dark">completed</span>. You can still join SciSpace — email us at{" "}
+                  <a href="mailto:spaceresearch.club@vitap.ac.in" className="font-semibold text-brand-blue-dark underline decoration-brand-blue/30 underline-offset-4 hover:text-brand-orange-dark">
+                    spaceresearch.club@vitap.ac.in
+                  </a>{" "}
+                  or head to <Link to="/join" className="font-semibold text-brand-blue-dark underline decoration-brand-blue/30 underline-offset-4 hover:text-brand-orange-dark">/join</Link>.
+                </p>
+              </div>
+            </Reveal>
+          ) : (
+            <Stagger className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+              {ongoingInitiatives.map((ev) => (
+                <InitiativeCard key={ev.id} event={ev} />
+              ))}
+            </Stagger>
+          )}
         </div>
       </section>
 

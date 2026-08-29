@@ -48,7 +48,7 @@ export const config = {
   LINKEDIN_URL: "https://www.linkedin.com/company/scispace-research-club/",
   INSTAGRAM_URL: "https://www.instagram.com/scispace_vitap/",
   GITHUB_URL: "#TODO",
-  EMAIL: "#TODO",
+  EMAIL: "mailto:spaceresearch.club@vitap.ac.in",
 
   /** Path to the official SciSpace logo asset */
   LOGO_PATH: "./scispace-logo.jpg",
