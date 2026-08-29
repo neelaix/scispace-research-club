@@ -24,7 +24,7 @@ export function FoundersSection() {
               key={f.id}
               variants={itemVariants}
               whileHover={{ y: -4 }}
-              className="group relative flex flex-col items-center gap-5 overflow-hidden rounded-3xl border border-brand-dark/8 bg-brand-canvas p-8 text-center shadow-card transition-all duration-300 hover:shadow-card-hover"
+              className="group relative flex h-full flex-col items-center gap-5 overflow-hidden rounded-3xl border border-brand-dark/8 bg-brand-canvas p-8 text-center shadow-card transition-all duration-300 hover:shadow-card-hover"
             >
               <span className="absolute right-4 top-4 grid h-8 w-8 place-items-center rounded-full bg-brand-orange/12 text-brand-orange">
                 <Crown className="h-4 w-4" aria-hidden="true" />
@@ -32,14 +32,14 @@ export function FoundersSection() {
               <span className="grid h-24 w-24 place-items-center rounded-3xl bg-brand-dark text-white shadow-card">
                 <span className="font-display text-2xl font-bold tracking-tight">{f.initials}</span>
               </span>
-              <div>
-                <p className="inline-flex flex-wrap items-center justify-center gap-2 rounded-full bg-brand-orange px-3 py-1 text-center text-xs font-bold uppercase tracking-widest text-white">
+              <div className="flex flex-col items-center">
+                <p className="inline-flex whitespace-nowrap items-center justify-center gap-1.5 rounded-full bg-brand-orange px-3 py-1.5 text-center text-[11px] font-bold uppercase tracking-[0.12em] leading-none text-white">
                   <Crown className="h-3.5 w-3.5 shrink-0" aria-hidden="true" /> {f.role}
                 </p>
                 <h3 className="mt-3 font-display text-2xl font-bold tracking-tight text-brand-dark">
                   {f.name}
                 </h3>
-                <p className="mt-1 text-sm font-medium text-brand-dark/60">{f.note}</p>
+                <p className="mt-1 whitespace-nowrap text-sm font-medium text-brand-dark/60">{f.note}</p>
               </div>
               <a
                 href="mailto:spaceresearch.club@vitap.ac.in"
