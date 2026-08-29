@@ -138,7 +138,7 @@ export function Footer() {
             <span className="inline-flex flex-wrap items-center justify-center gap-2">
               <span className="font-display font-semibold text-white">Manda Neelaksh</span>
               <span className="text-white/50">—</span>
-              <span className="text-white/70">Founder</span>
+              <span className="text-white/70">Founder &amp; Student Ambassador</span>
             </span>
             <span className="hidden h-4 w-px bg-white/15 sm:block" aria-hidden="true" />
             <span className="inline-flex flex-wrap items-center justify-center gap-2">

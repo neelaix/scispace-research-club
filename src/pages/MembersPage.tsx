@@ -121,7 +121,12 @@ export function MembersPage() {
             subtitle="SciSpace Research Club was founded by Manda Neelaksh and Mithinti Ramani — visible here so every new visitor knows who started SciSpace."
           />
           <Stagger className="mx-auto mt-12 grid max-w-3xl gap-5 sm:grid-cols-2">
-            <FounderCard name="Manda Neelaksh" role="Founder" note="Founder — SciSpace Research Club" initials="MN" />
+            <FounderCard
+              name="Manda Neelaksh"
+              role="Founder & Student Ambassador"
+              note="Founder • Student Ambassador"
+              initials="MN"
+            />
             <FounderCard
               name="Mithinti Ramani"
               role="Founder, Campus Ambassador & Star Student"

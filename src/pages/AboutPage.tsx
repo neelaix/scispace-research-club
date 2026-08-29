@@ -130,7 +130,7 @@ export function AboutPage() {
           />
           <div className="mx-auto mt-12 grid max-w-3xl gap-6 sm:grid-cols-2">
             {[
-              { name: "Manda Neelaksh", initials: "MN", role: "Founder", note: "SciSpace Research Club — Founder" },
+              { name: "Manda Neelaksh", initials: "MN", role: "Founder & Student Ambassador", note: "Founder • Student Ambassador" },
               { name: "Mithinti Ramani", initials: "MR", role: "Founder, Campus Ambassador & Star Student", note: "Founder • Campus Ambassador • Star Student" },
             ].map((f) => (
               <div
