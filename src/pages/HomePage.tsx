@@ -3,6 +3,7 @@ import { ScrollProgress } from "../components/ScrollProgress";
 import { Footer } from "../components/Footer";
 import { Hero } from "../components/Hero";
 import { AboutSection } from "../components/AboutSection";
+import { FoundersSection } from "../components/FoundersSection";
 import { PhilosophySection } from "../components/PhilosophySection";
 import { TeamGrid } from "../components/TeamGrid";
 import { JourneySection } from "../components/JourneySection";
@@ -18,6 +19,7 @@ export function HomePage() {
       <ScrollProgress />
       <main>
         <Hero />
+        <FoundersSection />
         <AboutSection />
         <PhilosophySection />
         <TeamGrid />

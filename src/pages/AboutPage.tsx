@@ -1,4 +1,4 @@
-import { Globe2, Lightbulb, Rocket, Target } from "lucide-react";
+import { Crown, Globe2, Lightbulb, Rocket, Target } from "lucide-react";
 import { motion } from "framer-motion";
 import { config } from "../config/config";
 import { Layout } from "../components/Layout";
@@ -111,6 +111,47 @@ export function AboutPage() {
                   </p>
                 </div>
               </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Founders — visible for new visitors */}
+      <section className="bg-white py-24">
+        <div className="container-site">
+          <SectionHeading
+            eyebrow="Founders"
+            title={
+              <>
+                Meet the <span className="text-gradient-brand">founders</span>
+              </>
+            }
+            subtitle="Manda Neelaksh and Mithinti Ramani founded SciSpace Research Club at VIT-AP University."
+          />
+          <div className="mx-auto mt-12 grid max-w-3xl gap-6 sm:grid-cols-2">
+            {[
+              { name: "Manda Neelaksh", initials: "MN" },
+              { name: "Mithinti Ramani", initials: "MR" },
+            ].map((f) => (
+              <div
+                key={f.name}
+                className="group relative flex flex-col items-center gap-4 rounded-3xl border border-brand-dark/8 bg-brand-canvas p-8 text-center shadow-card transition-all duration-300 hover:-translate-y-1 hover:shadow-card-hover"
+              >
+                <span className="absolute right-4 top-4 grid h-8 w-8 place-items-center rounded-full bg-brand-orange/12 text-brand-orange">
+                  <Crown className="h-4 w-4" aria-hidden="true" />
+                </span>
+                <span className="grid h-24 w-24 place-items-center rounded-3xl bg-brand-dark text-white shadow-card">
+                  <span className="font-display text-2xl font-bold">{f.initials}</span>
+                </span>
+                <div>
+                  <p className="inline-flex rounded-full bg-brand-orange px-3 py-1 text-xs font-bold uppercase tracking-widest text-white">Founder</p>
+                  <h3 className="mt-3 font-display text-xl font-bold text-brand-dark">{f.name}</h3>
+                  <p className="mt-1 text-xs font-medium uppercase tracking-widest text-brand-dark/50">SciSpace Research Club — Founder</p>
+                  <a href="mailto:spaceresearch.club@vitap.ac.in" className="mt-3 inline-flex text-xs font-semibold text-brand-blue-dark underline decoration-brand-blue/20 underline-offset-4 hover:text-brand-orange-dark">
+                    spaceresearch.club@vitap.ac.in
+                  </a>
+                </div>
+              </div>
             ))}
           </div>
         </div>
