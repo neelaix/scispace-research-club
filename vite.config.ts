@@ -4,6 +4,8 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   base: "./",
+  assetsInclude: ["**/*.wasm"],
+  optimizeDeps: { exclude: ["wasm"] },
   server: {
     proxy: {
       "/api": {
