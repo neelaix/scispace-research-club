@@ -13,6 +13,7 @@ import {
   ArrowRight,
   Image as ImageIcon,
   Maximize2,
+  Lock,
 } from "lucide-react";
 import { CosmicCanvas } from "./CosmicCanvas";
 
@@ -22,34 +23,13 @@ import { CosmicCanvas } from "./CosmicCanvas";
    premium without requiring local assets.
 ------------------------------------------------------------ */
 export const INTERSTELLAR_GALLERY: { src: string; alt: string }[] = [
-  {
-    src: "/interstellar-poster.png",
-    alt: "Interstellar — Official poster — SciSpace Research Club, VIT-AP",
-  },
-  {
-    src: "/interstellar-highlights/IMG_7132.jpg",
-    alt: "Interstellar screening — audience filling AB-2 Auditorium, VIT-AP (Photo 1)",
-  },
-  {
-    src: "/interstellar-highlights/IMG_7146.jpg",
-    alt: "Students watching Interstellar on the big screen — AB-2 Auditorium (Photo 2)",
-  },
-  {
-    src: "/interstellar-highlights/IMG_7157.jpg",
-    alt: "Full auditorium view during Interstellar: A Journey Beyond Limits — 339 students (Photo 3)",
-  },
-  {
-    src: "/interstellar-highlights/IMG_7173.jpg",
-    alt: "Crowd and stage view during the SciSpace Research Club event (Photo 4)",
-  },
-  {
-    src: "/interstellar-highlights/whatsapp-1.jpeg",
-    alt: "Event highlight — students gathered outside AB-2 Auditorium after screening (WhatsApp Photo 1)",
-  },
-  {
-    src: "/interstellar-highlights/whatsapp-2.jpeg",
-    alt: "Event highlight — group interaction after the research screening (WhatsApp Photo 2)",
-  },
+  { src: "/interstellar-poster.png", alt: "Poster" },
+  { src: "/interstellar-highlights/IMG_7132.jpg", alt: "Photo 1" },
+  { src: "/interstellar-highlights/IMG_7146.jpg", alt: "Photo 2" },
+  { src: "/interstellar-highlights/IMG_7157.jpg", alt: "Photo 3" },
+  { src: "/interstellar-highlights/IMG_7173.jpg", alt: "Photo 4" },
+  { src: "/interstellar-highlights/whatsapp-1.jpeg", alt: "Photo 5" },
+  { src: "/interstellar-highlights/whatsapp-2.jpeg", alt: "Photo 6" },
 ];
 
 /* ------------------------------------------------------------
@@ -137,7 +117,7 @@ function GalleryLightbox({
         </button>
         <div className="absolute inset-x-0 -bottom-1 flex justify-center sm:bottom-0">
           <span className="rounded-full bg-black/60 px-4 py-1.5 text-xs font-medium tracking-wide text-white/80 ring-1 ring-white/10 backdrop-blur">
-            {idx + 1} / {images.length} — {images[idx].alt}
+            {idx + 1} / {images.length}
           </span>
         </div>
       </motion.div>
@@ -423,6 +403,20 @@ function InterstellarDetailModal({ onClose }: { onClose: () => void }) {
                         View All Highlights <ArrowRight className="h-4 w-4" />
                       </button>
                     )}
+                  </div>
+
+                  {/* SECRET — next event teaser */}
+                  <div className="mt-8 rounded-2xl border border-dashed border-[#75C1D9]/30 bg-gradient-to-br from-[#75C1D9]/10 via-white/[0.04] to-[#FD802C]/10 p-5 backdrop-blur sm:p-6">
+                    <div className="flex items-center gap-2">
+                      <span className="grid h-7 w-7 place-items-center rounded-lg bg-white/10 text-white ring-1 ring-white/10">
+                        <Lock className="h-3.5 w-3.5 text-[#75C1D9]" />
+                      </span>
+                      <h3 className="font-display text-sm font-semibold tracking-wide text-white">NEXT TRANSMISSION — SECRET</h3>
+                      <span className="ml-auto rounded-full bg-[#FD802C]/20 px-2.5 py-1 text-xs font-semibold text-[#FD802C] ring-1 ring-[#FD802C]/30">LOCKED</span>
+                    </div>
+                    <p className="mt-3 text-sm leading-relaxed text-white/70">
+                      There is a secret for the next event. The signal is prepared, but the content stays locked until SciSpace reveals it. Stay tuned — <span className="font-semibold text-white">Research Reels Episode 02</span> is coming soon. 🔒✨
+                    </p>
                   </div>
                 </div>
               </div>

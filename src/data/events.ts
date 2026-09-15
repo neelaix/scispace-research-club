@@ -23,15 +23,32 @@ export interface ClubEvent {
 
 export const upcomingEvents: ClubEvent[] = [
   {
+    id: "research-reels-ep02-secret",
+    series: "Research Reels",
+    episode: "Episode 02",
+    title: "Secret Transmission — Next Screening",
+    tags: ["Secret", "Research", "Cinema"],
+    description:
+      "Something is incoming. The next Research Reels screening is locked — SciSpace is preparing a secret transmission. Stay tuned, the signal will be revealed soon.",
+    status: "upcoming",
+    badge: "Secret — Coming Soon",
+    themes: ["Secret Event", "Research", "Exploration"],
+  },
+];
+
+export const ongoingInitiatives: ClubEvent[] = [];
+
+export const pastEvents: ClubEvent[] = [
+  {
     id: "research-reels-ep01",
     series: "Research Reels",
     episode: "Episode 01",
     title: "Interstellar",
     tags: ["Space", "Astrophysics", "Relativity", "Exploration"],
     description:
-      "Interstellar — A SciSpace Research Club Movie Experience at VIT-AP University. A space exploration screening exploring astrophysics, relativity, black holes, wormholes, time dilation, scientific research and human curiosity — encouraging students to explore scientific concepts and research through cinema. Presented by SciSpace Research Club, VIT-AP University. Theme: Space • Science • Research • Exploration.",
-    status: "upcoming",
-    badge: "Upcoming",
+      "Interstellar: A Journey Beyond Limits — past screening by SciSpace Research Club, VIT-AP University. A research-oriented movie screening that brought together 339 students. Presented by SciSpace Research Club, VIT-AP University.",
+    status: "past",
+    badge: "Completed — Past Event",
     themes: [
       "Space Exploration",
       "Astrophysics",
@@ -44,11 +61,6 @@ export const upcomingEvents: ClubEvent[] = [
       "Exploration & Discovery",
     ],
   },
-];
-
-export const ongoingInitiatives: ClubEvent[] = [];
-
-export const pastEvents: ClubEvent[] = [
   {
     id: "recruitment-2026",
     series: "Community",
