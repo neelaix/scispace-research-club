@@ -46,7 +46,7 @@ export const pastEvents: ClubEvent[] = [
     title: "Interstellar",
     tags: ["Space", "Astrophysics", "Relativity", "Exploration"],
     description:
-      "Interstellar: A Journey Beyond Limits — past screening by SciSpace Research Club, VIT-AP University. A research-oriented movie screening that brought together 339 students. Presented by SciSpace Research Club, VIT-AP University.",
+      "Interstellar — A SciSpace Research Club Movie Experience at VIT-AP University. A space exploration screening exploring astrophysics, relativity, black holes, wormholes, time dilation, scientific research and human curiosity — encouraging students to explore scientific concepts and research through cinema. Presented by SciSpace Research Club, VIT-AP University. Theme: Space • Science • Research • Exploration.",
     status: "past",
     badge: "Completed — Past Event",
     themes: [
