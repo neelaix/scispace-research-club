@@ -255,12 +255,12 @@ function InterstellarDetailModal({ onClose }: { onClose: () => void }) {
                 <p className="mt-2 text-sm font-medium tracking-[0.18em] text-[#FD802C]">SPACE · RELATIVITY · EXPLORATION</p>
 
                 {/* meta grid */}
-                <div className="mt-7 grid gap-3 sm:grid-cols-2">
+                 <div className="mt-7 grid gap-3 sm:grid-cols-2">
                   {[
                     { icon: Calendar, label: "DATE", value: "12 September 2026" },
                     { icon: Clock, label: "TIME", value: "2:00 PM – 5:30 PM" },
                     { icon: MapPin, label: "VENUE", value: "AB-2 Auditorium, VIT-AP University" },
-                    { icon: Users, label: "ATTENDED", value: "339 Students" },
+                    { icon: Users, label: "ATTENDED", value: "510 Students" },
                   ].map((m) => (
                     <div
                       key={m.label}
@@ -303,7 +303,7 @@ function InterstellarDetailModal({ onClose }: { onClose: () => void }) {
                   <p className="mt-3 text-[15px] leading-relaxed text-white/75">
                     “SciSpace Research Club, VIT-AP successfully organized ‘Interstellar: A Journey Beyond Limits’, a
                     research-oriented movie screening that brought together{" "}
-                    <span className="font-semibold text-white">339 students</span> for an engaging experience of science,
+                    <span className="font-semibold text-white">510 students</span> for an engaging experience of science,
                     curiosity, and exploration. Through <span className="font-semibold text-white">Interstellar</span>,
                     students explored fascinating concepts including{" "}
                     <span className="text-[#75C1D9]">space exploration, relativity, time dilation, black holes, gravity,</span>{" "}
@@ -543,7 +543,7 @@ export function InterstellarInteractiveCard() {
                 </div>
 
                 <div className="mt-3 inline-flex w-fit items-center gap-2 rounded-full bg-[#75C1D9]/15 px-3 py-1 text-xs font-semibold tracking-wide text-[#75C1D9] ring-1 ring-[#75C1D9]/20">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#75C1D9] animate-pulse" /> 339 · AB-2 AUDITORIUM
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#75C1D9] animate-pulse" /> 510 · AB-2 AUDITORIUM · COMPLETED
                 </div>
 
                 <h3 className="mt-3 font-display text-[1.35rem] font-bold leading-none tracking-tight text-white lg:text-[1.45rem]">
