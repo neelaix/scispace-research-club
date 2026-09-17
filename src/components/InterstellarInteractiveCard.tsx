@@ -455,7 +455,7 @@ export function InterstellarInteractiveCard() {
       {/* FIXED OUTER RECTANGLE — same dimension on hover, splits into two squares inside */}
       <div
         ref={cardRef}
-        className="group/card relative mx-auto w-full max-w-[880px] overflow-hidden rounded-[2rem] border border-white/10 bg-[#070a14] shadow-[0_20px_80px_rgba(0,0,0,0.45),0_0_0_1px_rgba(255,255,255,0.06)] aspect-[3/4] sm:aspect-[2/1]"
+        className="group/card relative mx-auto w-full overflow-hidden rounded-[2rem] border border-white/10 bg-[#070a14] shadow-[0_20px_80px_rgba(0,0,0,0.45),0_0_0_1px_rgba(255,255,255,0.06)] aspect-[3/4] sm:aspect-[2/1]"
         tabIndex={0}
         role="region"
         aria-label="Interstellar — A Journey Beyond Limits — interactive poster"
