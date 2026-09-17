@@ -26,7 +26,7 @@ export function isPasswordValid(input: string): boolean {
       const a = Buffer.from(inputHash, "hex");
       const b = Buffer.from(hashEnv, "hex");
       if (a.length !== b.length) return false;
-      return crypto.timingSafeEqual(a, b);
+      return crypto.timingSafeEqual(new Uint8Array(a), new Uint8Array(b));
     } catch {
       return inputHash === hashEnv;
     }
@@ -35,7 +35,7 @@ export function isPasswordValid(input: string): boolean {
     const a = Buffer.from(input, "utf8");
     const b = Buffer.from(plainEnv, "utf8");
     if (a.length !== b.length) return false;
-    return crypto.timingSafeEqual(a, b);
+    return crypto.timingSafeEqual(new Uint8Array(a), new Uint8Array(b));
   }
   // No env set — deny by default in production, allow dev fallback
   if (process.env.NODE_ENV !== "production") {
