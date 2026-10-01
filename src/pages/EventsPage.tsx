@@ -1,4 +1,4 @@
-import { ArrowRight, CalendarX2, Hourglass, Layers } from "lucide-react";
+import { ArrowRight, CalendarX2, Hourglass } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Layout } from "../components/Layout";
@@ -46,7 +46,7 @@ function InitiativeCard({ event }: { event: ClubEvent }) {
 }
 
 export function EventsPage() {
-  const featured = upcomingEvents[0];
+  // Secret teaser only — Q-Connect details never render on listing pages.
 
   return (
     <Layout>
@@ -61,46 +61,22 @@ export function EventsPage() {
         subtitle="Screenings, talks, workshops and discussions — every SciSpace event is designed to move you from watching to thinking, and from thinking to doing."
       />
 
-      {/* Upcoming */}
-      <section className="bg-white py-24">
+      {/* Upcoming — secret teaser only */}
+      <section className="bg-white py-16 md:py-24">
         <div className="container-site">
           <SectionHeading
             eyebrow="Upcoming"
-            title="What's launching soon"
-            subtitle="Planned, not fabricated — we list an event only when it's real."
+            title="Classified transmission"
+            subtitle="Our second event is locked. Open the secret to reveal it."
             align="left"
           />
-          <div className="mt-10 grid gap-6">
+          <div className="mt-8 grid gap-6">
             {upcomingEvents.map((ev) => (
               <Reveal key={ev.id}>
                 <EventCard event={ev} />
               </Reveal>
             ))}
           </div>
-
-          {featured && featured.themes && (
-            <Reveal delay={0.1} className="mt-8">
-              <div className="rounded-3xl border border-brand-dark/8 bg-brand-canvas p-7 md:p-9">
-                <div className="flex items-center gap-3">
-                  <Layers className="h-5 w-5 text-brand-blue-dark" aria-hidden="true" />
-                  <h3 className="font-display text-lg font-semibold text-brand-dark">
-                    Discussion themes — {featured.title} ({featured.episode})
-                  </h3>
-                </div>
-                <ul className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                  {featured.themes.map((t) => (
-                    <li
-                      key={t}
-                      className="flex items-center gap-2.5 rounded-xl bg-white px-4 py-3 text-sm font-medium text-brand-dark/80 shadow-sm ring-1 ring-brand-dark/5"
-                    >
-                      <span className="h-2 w-2 shrink-0 rounded-full bg-brand-orange" aria-hidden="true" />
-                      {t}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </Reveal>
-          )}
         </div>
       </section>
 

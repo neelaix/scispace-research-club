@@ -78,3 +78,9 @@ export function getTokenFromRequest(req: VercelRequest): string | null {
 export function getAdminUsername(): string {
   return process.env.ADMIN_USERNAME ?? (process.env.NODE_ENV !== "production" ? "admin" : "");
 }
+
+export async function requireAdmin(req: VercelRequest): Promise<Session | null> {
+  const token = getTokenFromRequest(req);
+  if (!token) return null;
+  return verifyToken(token);
+}

@@ -1,4 +1,4 @@
-import { ArrowRight, Clapperboard, Sparkles } from "lucide-react";
+import { ArrowRight, Clapperboard, Lock, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { openExternal } from "../lib/open";
 import type { ClubEvent } from "../data/events";
@@ -17,6 +17,10 @@ export function EventCard({ event }: { event: ClubEvent }) {
       openExternal(vtappUrl);
       return;
     }
+    if (registerUrl && registerUrl.startsWith("/") && !registerUrl.startsWith("//")) {
+      navigate(registerUrl);
+      return;
+    }
     if (registerUrl && !registerUrl.startsWith("#TODO")) {
       openExternal(registerUrl);
       return;
@@ -26,6 +30,41 @@ export function EventCard({ event }: { event: ClubEvent }) {
   // Interstellar: premium interactive poster — hover compress + cinematic panel
   if (isInterstellar) {
     return <InterstellarInteractiveCard />;
+  }
+  // Secret teaser — never reveal Q-Connect details on listing surfaces.
+  if (event.id === "qconnect-secret") {
+    const target = event.secretTarget ?? "/transmission";
+    return (
+      <article className="group relative overflow-hidden rounded-3xl border border-cyan-300/20 bg-[#070b1d] text-white shadow-card-hover">
+        <div
+          aria-hidden="true"
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(640px 300px at 10% 0%, rgba(34,211,238,0.20), transparent 60%), radial-gradient(560px 300px at 95% 100%, rgba(212,175,55,0.14), transparent 60%), linear-gradient(160deg, #070b1d, #0b1230 60%, #130c30)",
+          }}
+        />
+        <div className="relative z-10 flex flex-col gap-6 p-7 sm:p-9 lg:flex-row lg:items-center">
+          <div className="flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="chip border border-cyan-300/30 bg-cyan-300/10 text-cyan-200">
+                <Lock className="h-3.5 w-3.5" aria-hidden="true" /> Classified
+              </span>
+              {event.episode && <span className="chip bg-white/5 text-white/60">{event.episode} · Second Event</span>}
+            </div>
+            <h3 className="mt-4 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">SECRET EVENT</h3>
+            <p className="mt-3 max-w-xl text-sm leading-relaxed text-white/60">{event.description}</p>
+          </div>
+          <div className="flex shrink-0 flex-col gap-3 sm:flex-row lg:flex-col">
+            <Magnetic>
+              <button type="button" onClick={() => navigate(target)} className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-cyan-300 to-amber-200 px-6 py-3 text-sm font-bold text-[#050816]">
+                Decrypt <ArrowRight className="h-4 w-4" />
+              </button>
+            </Magnetic>
+          </div>
+        </div>
+      </article>
+    );
   }
 
   return (

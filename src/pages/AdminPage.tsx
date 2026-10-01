@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Layout } from "../components/Layout";
+import { QConnectAdmin } from "../components/QConnectAdmin";
 import { ShieldCheck, LogOut, Lock, Eye, EyeOff } from "lucide-react";
 
 export function AdminPage() {
@@ -23,10 +24,15 @@ export function AdminPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username: user, password: pass }),
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Login failed");
-      setToken(data.token);
-      try { localStorage.setItem("scispace_admin_token", data.token); } catch { /* ignore */ }
+      let data: Record<string, unknown>;
+      try {
+        data = await res.json();
+      } catch {
+        throw new Error(res.ok ? "Empty response from server." : `Server error (${res.status}).`);
+      }
+      if (!res.ok) throw new Error((data.error as string) || "Login failed");
+      setToken(data.token as string);
+      try { localStorage.setItem("scispace_admin_token", data.token as string); } catch { /* ignore */ }
       setPass("");
     } catch (e) {
       setError((e as Error).message);
@@ -94,16 +100,16 @@ export function AdminPage() {
               </div>
             </div>
           ) : (
+            <>
             <div className="rounded-2xl border border-brand-dark/10 bg-white p-8 shadow-card dark:border-white/10 dark:bg-[#1E1E24]">
               <h2 className="font-display text-xl font-semibold text-brand-dark dark:text-white">Welcome, Admin</h2>
               <p className="mt-2 text-sm leading-relaxed text-brand-dark/60 dark:text-white/60">
-                Ticketing is now handled exclusively via the official VIT-AP VTApp portal (<a href="https://vtapp.vitap.ac.in/events/interstellar-a-journey-beyond-limits" target="_blank" rel="noopener noreferrer" className="font-semibold text-brand-blue-dark underline decoration-brand-blue/30 underline-offset-4 hover:text-brand-orange-dark">vtapp.vitap.ac.in/events/interstellar-a-journey-beyond-limits</a>). No in-app payment or booking data is stored.
-              </p>
-              <p className="mt-4 text-sm leading-relaxed text-brand-dark/60 dark:text-white/60">
-                Onboarding initiatives — Member Recruitment, Team Selection and Community Building — are marked as <span className="font-semibold text-emerald-600">Completed</span>. You can still join SciSpace by emailing <a href="mailto:spaceresearch.club@vitap.ac.in" className="font-semibold text-brand-blue-dark underline decoration-brand-blue/30 underline-offset-4 hover:text-brand-orange-dark">spaceresearch.club@vitap.ac.in</a>.
+                Interstellar ticketing via VTApp portal. Q-Connect 2026 bookings below are live from MongoDB.
               </p>
               {error && <p role="alert" className="mt-4 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700 dark:bg-red-900/20 dark:text-red-300">{error}</p>}
             </div>
+            {token && <QConnectAdmin token={token} />}
+            </>
           )}
         </div>
       </section>

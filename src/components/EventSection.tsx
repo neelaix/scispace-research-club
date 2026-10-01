@@ -1,67 +1,96 @@
-import { ArrowUpRight, Lock } from "lucide-react";
-import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { ArrowUpRight, Lock, Fingerprint, ChevronRight } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { upcomingEvents, pastEvents } from "../data/events";
 import { SectionHeading } from "./SectionHeading";
 import { Reveal } from "./Reveal";
 import { InterstellarInteractiveCard } from "./InterstellarInteractiveCard";
 
+function SecretTeaser() {
+  const navigate = useNavigate();
+  return (
+    <motion.button
+      type="button"
+      onClick={() => navigate("/transmission")}
+      whileHover={{ y: -4 }}
+      whileTap={{ scale: 0.99 }}
+      transition={{ type: "spring", stiffness: 260, damping: 24 }}
+      className="group relative flex w-full flex-col justify-between gap-6 overflow-hidden rounded-[2rem] border border-white/10 bg-[#070b1d] p-7 text-left shadow-card-hover sm:p-8 lg:flex-row lg:items-center lg:p-10"
+      aria-label="Open the secret event"
+    >
+      <div
+        aria-hidden="true"
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(640px 300px at 10% 0%, rgba(34,211,238,0.22), transparent 60%), radial-gradient(560px 300px at 95% 100%, rgba(212,175,55,0.16), transparent 60%), linear-gradient(160deg, #070b1d, #0b1230 55%, #120b2e)",
+        }}
+      />
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 opacity-[0.10]"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(148,197,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(148,197,255,0.6) 1px, transparent 1px)",
+          backgroundSize: "44px 44px",
+        }}
+      />
+      <span className="relative flex flex-1 flex-col">
+        <span className="flex flex-wrap items-center gap-2">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-cyan-300/30 bg-cyan-300/10 px-3 py-1 text-xs font-semibold tracking-widest text-cyan-200">
+            <Lock className="h-3.5 w-3.5" /> CLASSIFIED
+          </span>
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-300/30 bg-amber-300/10 px-3 py-1 text-xs font-semibold tracking-widest text-amber-200">
+            <Fingerprint className="h-3.5 w-3.5" /> EPISODE 02 · SECOND EVENT
+          </span>
+        </span>
+        <span className="mt-4 font-display text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
+          SECRET EVENT
+        </span>
+        <span className="mt-2 max-w-2xl text-sm leading-relaxed text-white/60">
+          A classified SciSpace transmission is inbound. Signal locked — tap to decrypt. Details unlock only inside.
+        </span>
+      </span>
+      <span className="relative inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-gradient-to-r from-cyan-300 to-amber-200 px-7 py-3.5 text-sm font-bold text-[#050816] shadow-lg shadow-cyan-500/20 transition group-hover:brightness-110">
+        Decrypt Transmission <ChevronRight className="h-4 w-4" />
+      </span>
+    </motion.button>
+  );
+}
+
 export function EventSection() {
-  const secret = upcomingEvents[0];
+  const secret = upcomingEvents.find((e) => e.id === "qconnect-secret") ?? upcomingEvents[0];
   const pastInterstellar = pastEvents.find((e) => e.id === "research-reels-ep01");
   if (!pastInterstellar && !secret) return null;
 
   return (
-    <section id="events" className="relative bg-brand-canvas py-24 md:py-32">
+    <section id="events" className="relative bg-brand-canvas py-16 md:py-24">
       <div className="container-site">
         <SectionHeading
-          eyebrow="Research Reels"
+          eyebrow="Events"
           title={
             <>
               Past <span className="text-gradient-brand">completed</span> & next <span className="text-gradient-brand">secret</span>
             </>
           }
-          subtitle="510 students joined Interstellar — Completed. Next transmission is locked as secret."
+          subtitle="Interstellar — Completed. Our second event is locked as a classified transmission."
         />
 
-        <div className="mt-12 flex flex-col gap-8">
+        <div className="mt-10 flex flex-col gap-6 md:gap-8">
           {pastInterstellar && (
-            <Reveal delay={0.1} className="w-full">
+            <Reveal delay={0.08} className="w-full">
               <InterstellarInteractiveCard />
             </Reveal>
           )}
 
           {secret && (
-            <Reveal delay={0.18} className="w-full">
-              <div className="relative flex w-full flex-col justify-between overflow-hidden rounded-[2rem] border border-brand-dark/8 bg-white shadow-card lg:flex-row lg:items-center">
-                <div className="absolute inset-0 bg-gradient-to-br from-brand-mist via-white to-brand-canvas" aria-hidden="true" />
-                <div className="absolute inset-0 opacity-[0.04]" aria-hidden="true" style={{ backgroundImage: "linear-gradient(rgba(42,42,52,0.8) 1px, transparent 1px), linear-gradient(90deg, rgba(42,42,52,0.8) 1px, transparent 1px)", backgroundSize: "48px 48px" }} />
-                <div className="relative flex flex-1 flex-col p-7 sm:p-8 lg:p-9">
-                  <div className="flex items-center gap-2">
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-dark px-3 py-1 text-xs font-semibold tracking-wide text-white">
-                      <Lock className="h-3.5 w-3.5" /> {secret.series}
-                    </span>
-                    <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-800 ring-1 ring-amber-200">Secret</span>
-                  </div>
-                  <h3 className="mt-4 font-display text-2xl font-bold tracking-tight text-brand-dark sm:text-3xl">{secret.title}</h3>
-                  <p className="mt-1.5 text-sm font-semibold uppercase tracking-[0.18em] text-brand-orange">{secret.badge}</p>
-                  <p className="mt-3 max-w-3xl text-sm leading-relaxed text-brand-dark/60">{secret.description}</p>
-                  <div className="mt-5 flex flex-wrap gap-2">
-                    {secret.tags.map((t) => (
-                      <span key={t} className="rounded-full bg-brand-dark/5 px-3 py-1 text-xs font-medium text-brand-dark/70 ring-1 ring-brand-dark/5">{t}</span>
-                    ))}
-                  </div>
-                </div>
-                <div className="relative p-7 pt-0 sm:p-8 sm:pt-0 lg:p-9 lg:pl-0 lg:pt-9">
-                  <span className="inline-flex whitespace-nowrap items-center justify-center gap-2 rounded-full bg-brand-dark/5 px-6 py-3.5 text-sm font-semibold text-brand-dark/40 ring-1 ring-brand-dark/10">
-                    <Lock className="h-4 w-4" /> Locked — Reveal Soon
-                  </span>
-                </div>
-              </div>
+            <Reveal delay={0.14} className="w-full">
+              <SecretTeaser />
             </Reveal>
           )}
         </div>
 
-        <Reveal delay={0.2} className="mt-10 text-center">
+        <Reveal delay={0.18} className="mt-8 text-center">
           <Link
             to="/events"
             className="group inline-flex items-center gap-2 font-semibold text-brand-blue-dark transition-colors hover:text-brand-orange-dark"

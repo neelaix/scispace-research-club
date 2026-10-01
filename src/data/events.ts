@@ -19,20 +19,23 @@ export interface ClubEvent {
   registerUrl?: string;
   /** Optional discussion themes shown on the event's detail card */
   themes?: string[];
+  /** Internal secret target route — teaser navigates here, details live only there. */
+  secretTarget?: string;
 }
 
 export const upcomingEvents: ClubEvent[] = [
   {
-    id: "research-reels-ep02-secret",
-    series: "Research Reels",
+    id: "qconnect-secret",
+    series: "Classified",
     episode: "Episode 02",
-    title: "Secret Transmission — Next Screening",
-    tags: ["Secret", "Research", "Cinema"],
+    title: "SECRET EVENT",
+    tags: ["Classified"],
     description:
-      "Something is incoming. The next Research Reels screening is locked — SciSpace is preparing a secret transmission. Stay tuned, the signal will be revealed soon.",
+      "A classified SciSpace transmission is inbound. Signal locked — details unlock only inside.",
     status: "upcoming",
-    badge: "Secret — Coming Soon",
-    themes: ["Secret Event", "Research", "Exploration"],
+    badge: "Classified",
+    registerUrl: "/transmission",
+    secretTarget: "/transmission",
   },
 ];
 
