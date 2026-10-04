@@ -16,13 +16,26 @@ export async function gasCall<T = unknown>(
 
   if (!url || !secret) throw new Error("QCONNECT backend not configured.");
 
-  const res = await fetch(url, {
-    method:  "POST",
-    headers: { "Content-Type": "application/json" },
-    body:    JSON.stringify({ action, secret, ...payload }),
-  });
+  let res: Response;
+  try {
+    res = await fetch(url, {
+      method:  "POST",
+      headers: { "Content-Type": "application/json" },
+      body:    JSON.stringify({ action, secret, ...payload }),
+    });
+  } catch (e) {
+    throw new Error(`GAS unreachable: ${(e as Error).message}`);
+  }
 
-  const data = (await res.json()) as T & { ok?: boolean; error?: string };
+  const text = await res.text();
+  let data: T & { ok?: boolean; error?: string };
+  try {
+    data = JSON.parse(text) as T & { ok?: boolean; error?: string };
+  } catch {
+    throw new Error(
+      `GAS returned non-JSON (status ${res.status}). Check the GAS deployment URL / access.`
+    );
+  }
 
   if (!res.ok || data.ok === false) {
     throw new Error(data.error || "GAS returned an error.");

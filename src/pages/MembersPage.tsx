@@ -157,7 +157,7 @@ export function MembersPage() {
         <div className="container-site">
           <SectionHeading
             eyebrow="Team leads"
-            title="Leading the eight domains"
+            title="Leading the nine domains"
             subtitle="Each domain is guided by a lead. Confirmations land here as teams finalize."
           />
           <Stagger className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

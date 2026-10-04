@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -9,7 +8,6 @@ import { Layout } from "../components/Layout";
 import { Reveal } from "../components/Reveal";
 import { QCONNECT } from "../config/qconnect";
 import { QuantumBackdrop, QuantumGrid, QuantumParticles } from "../components/qconnect/QuantumBackdrop";
-import { DecryptTitle } from "../components/qconnect/DecryptTitle";
 
 const chips = [
   { icon: CalendarDays, label: QCONNECT.EVENT_DATE },
@@ -21,12 +19,11 @@ const chips = [
 
 export function QConnectPage() {
   const navigate = useNavigate();
-  const [revealed, setRevealed] = useState(false);
 
   return (
     <Layout>
       <div className="qconnect">
-        {/* HERO — reveal + poster beside about */}
+        {/* HERO — poster beside about */}
         <section className="relative overflow-hidden bg-[#04060f] text-white">
           <QuantumBackdrop />
           <QuantumGrid />
@@ -55,9 +52,9 @@ export function QConnectPage() {
                 </Reveal>
                 <motion.button
                   type="button"
-                  onClick={() => navigate(`${QCONNECT.SECRET_PATH}/register`)}
+                  onClick={() => navigate(`${QCONNECT.EVENT_PATH}/register`)}
                   initial={{ opacity: 0, y: 14 }}
-                  animate={{ opacity: revealed ? 1 : 0.45, y: 0 }}
+                  animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.2 }}
                   whileHover={{ scale: 1.015 }}
                   whileTap={{ scale: 0.99 }}
@@ -67,7 +64,7 @@ export function QConnectPage() {
                 </motion.button>
                 <p className="text-center text-xs text-white/45">180 seats · secure Razorpay checkout · instant ticket</p>
               </div>
-              {/* RIGHT — reveal + about beside poster */}
+              {/* RIGHT — about beside poster */}
               <div>
                 <motion.p
                   initial={{ opacity: 0, y: 12 }}
@@ -88,15 +85,20 @@ export function QConnectPage() {
                     className="h-12 w-12 rounded-2xl object-contain ring-1 ring-cyan-300/30 md:h-16 md:w-16"
                   />
                   <p className="text-xs font-semibold uppercase tracking-[0.28em] text-amber-200/90">
-                    Classified transmission · Decrypted
+                    Research-Focused Event · Second Event
                   </p>
                 </div>
                 <div className="mt-3">
-                  <DecryptTitle onDone={() => setRevealed(true)} />
+                  <h1
+                    className="qconnect-h-display font-display font-extrabold tracking-tight text-white"
+                    aria-label="Q-Connect 2026"
+                  >
+                    Q-CONNECT 2026
+                  </h1>
                 </div>
                 <motion.div
                   initial={{ opacity: 0 }}
-                  animate={{ opacity: revealed ? 1 : 0.35 }}
+                  animate={{ opacity: 1 }}
                   transition={{ duration: 0.6 }}
                 >
                   <p className="mt-2 font-display text-lg text-cyan-100/90">{QCONNECT.TAGLINE}</p>

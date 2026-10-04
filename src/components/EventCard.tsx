@@ -1,4 +1,5 @@
-import { ArrowRight, Clapperboard, Lock, Sparkles } from "lucide-react";
+import { ArrowRight, Atom, Clapperboard, FlaskConical, Sparkles } from "lucide-react";
+import { QCONNECT } from "../config/qconnect";
 import { useNavigate } from "react-router-dom";
 import { openExternal } from "../lib/open";
 import type { ClubEvent } from "../data/events";
@@ -31,9 +32,11 @@ export function EventCard({ event }: { event: ClubEvent }) {
   if (isInterstellar) {
     return <InterstellarInteractiveCard />;
   }
-  // Secret teaser — never reveal Q-Connect details on listing surfaces.
-  if (event.id === "qconnect-secret") {
-    const target = event.secretTarget ?? "/transmission";
+  // Q-Connect — open 2nd event, presented just like Interstellar (open title + research positioning).
+  // Quantum dark design kept; only the secrecy is removed.
+  if (event.id === "qconnect-2026") {
+    const detail = event.detailPath ?? QCONNECT.EVENT_PATH;
+    const register = event.registerUrl ?? `${QCONNECT.EVENT_PATH}/register`;
     return (
       <article className="group relative overflow-hidden rounded-3xl border border-cyan-300/20 bg-[#070b1d] text-white shadow-card-hover">
         <div
@@ -48,17 +51,35 @@ export function EventCard({ event }: { event: ClubEvent }) {
           <div className="flex-1">
             <div className="flex flex-wrap items-center gap-2">
               <span className="chip border border-cyan-300/30 bg-cyan-300/10 text-cyan-200">
-                <Lock className="h-3.5 w-3.5" aria-hidden="true" /> Classified
+                <Atom className="h-3.5 w-3.5" aria-hidden="true" /> {event.episode} · Second Event
               </span>
-              {event.episode && <span className="chip bg-white/5 text-white/60">{event.episode} · Second Event</span>}
+              <span className="chip border border-amber-300/30 bg-amber-300/10 text-amber-200">
+                <FlaskConical className="h-3.5 w-3.5" aria-hidden="true" /> Research-Focused
+              </span>
+              {event.badge && <span className="chip bg-white/5 text-white/60">{event.badge}</span>}
             </div>
-            <h3 className="mt-4 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">SECRET EVENT</h3>
+            <h3 className="mt-4 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">{event.title}</h3>
+            <p className="mt-1 text-sm font-semibold text-cyan-100/80">{QCONNECT.TAGLINE} · {QCONNECT.SUBTITLE}</p>
             <p className="mt-3 max-w-xl text-sm leading-relaxed text-white/60">{event.description}</p>
+            {event.themes && event.themes.length > 0 && (
+              <div className="mt-4 flex flex-wrap gap-2">
+                {event.themes.slice(0, 6).map((t) => (
+                  <span key={t} className="rounded-full border border-cyan-300/20 bg-cyan-300/5 px-3 py-1 text-xs font-medium text-cyan-100/80">
+                    {t}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
           <div className="flex shrink-0 flex-col gap-3 sm:flex-row lg:flex-col">
             <Magnetic>
-              <button type="button" onClick={() => navigate(target)} className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-cyan-300 to-amber-200 px-6 py-3 text-sm font-bold text-[#050816]">
-                Decrypt <ArrowRight className="h-4 w-4" />
+              <button type="button" onClick={() => navigate(detail)} className="inline-flex items-center justify-center gap-2 rounded-full border border-white/15 bg-white/5 px-6 py-3 text-sm font-bold text-white transition hover:border-cyan-300/50 hover:text-cyan-100">
+                View Event <ArrowRight className="h-4 w-4" />
+              </button>
+            </Magnetic>
+            <Magnetic>
+              <button type="button" onClick={() => navigate(register)} className="inline-flex items-center justify-center gap-2 rounded-full bg-gradient-to-r from-cyan-300 to-amber-200 px-6 py-3 text-sm font-bold text-[#050816]">
+                Book Now <ArrowRight className="h-4 w-4" />
               </button>
             </Magnetic>
           </div>

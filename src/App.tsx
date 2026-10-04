@@ -29,16 +29,16 @@ export default function App() {
           <Route path="/members" element={<MembersPage />} />
           <Route path="/join" element={<JoinPage />} />
           <Route path="/admin" element={<AdminPage />} />
-          {/* Secret reveal route — Q-Connect details live ONLY here */}
-          <Route path="/transmission" element={<QConnectPage />} />
-          <Route path="/transmission/register" element={<QConnectRegisterPage />} />
-          <Route path="/transmission/success" element={<QConnectSuccessPage />} />
-          <Route path="/transmission/failure" element={<QConnectFailurePage />} />
-          {/* Legacy guessable URLs → obscure secret path */}
-          <Route path="/qconnect" element={<Navigate to="/transmission" replace />} />
-          <Route path="/qconnect/register" element={<Navigate to="/transmission/register" replace />} />
-          <Route path="/qconnect/success" element={<Navigate to="/transmission/success" replace />} />
-          <Route path="/qconnect/failure" element={<Navigate to="/transmission/failure" replace />} />
+          {/* Q-Connect — open 2nd event */}
+          <Route path="/qconnect" element={<QConnectPage />} />
+          <Route path="/qconnect/register" element={<QConnectRegisterPage />} />
+          <Route path="/qconnect/success" element={<QConnectSuccessPage />} />
+          <Route path="/qconnect/failure" element={<QConnectFailurePage />} />
+          {/* Legacy secret path → open canonical URLs */}
+          <Route path="/transmission" element={<Navigate to="/qconnect" replace />} />
+          <Route path="/transmission/register" element={<Navigate to="/qconnect/register" replace />} />
+          <Route path="/transmission/success" element={<Navigate to="/qconnect/success" replace />} />
+          <Route path="/transmission/failure" element={<Navigate to="/qconnect/failure" replace />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </RouteTransition>

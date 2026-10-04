@@ -2,7 +2,7 @@
  * Q-CONNECT 2026 — central event configuration.
  * Single source of truth for event details and pricing.
  * Backend MUST re-validate amount/capacity — never trust client-side values.
- * Details surface only on the secret reveal route, never on the homepage.
+ * Open event — details surface on listing pages and the /qconnect route.
  */
 export const QCONNECT = {
   EVENT_ID: "q-connect-2026",
@@ -23,7 +23,7 @@ export const QCONNECT = {
   UPI_NOTE: "Q-Connect 2026",
   MAX_PARTICIPANTS: 180,
   BOOKING_PREFIX: "QCON-2026-",
-  SECRET_PATH: "/transmission",
+  EVENT_PATH: "/qconnect",
   LOGO_PATH: "./qconnect/q.png",
   POSTER_PATH: "./qconnect/q.png",
   DESCRIPTION:

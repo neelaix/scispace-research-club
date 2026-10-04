@@ -8,6 +8,7 @@ import {
   Megaphone,
   Handshake,
   Settings2,
+  Linkedin,
 } from "lucide-react";
 
 export interface Team {
@@ -77,7 +78,7 @@ export const teams: Team[] = [
     name: "Marketing & Social Media Team",
     short: "Digital campaigns, content strategy and community growth.",
     description:
-      "Digital campaigns, LinkedIn, social media, content strategy, announcements and community growth.",
+      "Digital campaigns, social media, content strategy, announcements and community growth.",
     icon: Megaphone,
     color: "blue",
   },
@@ -100,5 +101,15 @@ export const teams: Team[] = [
       "Planning, coordination, scheduling, logistics, internal systems and execution.",
     icon: Settings2,
     color: "blue",
+  },
+  {
+    id: "linkedin-team",
+    number: "09",
+    name: "LinkedIn Team",
+    short: "LinkedIn presence, professional storytelling and research showcases.",
+    description:
+      "LinkedIn strategy, professional branding, research highlights, achievements and community growth on LinkedIn.",
+    icon: Linkedin,
+    color: "orange",
   },
 ];

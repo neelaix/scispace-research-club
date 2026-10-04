@@ -19,23 +19,31 @@ export interface ClubEvent {
   registerUrl?: string;
   /** Optional discussion themes shown on the event's detail card */
   themes?: string[];
-  /** Internal secret target route — teaser navigates here, details live only there. */
-  secretTarget?: string;
+  /** Internal detail route — open event page. */
+  detailPath?: string;
 }
 
 export const upcomingEvents: ClubEvent[] = [
   {
-    id: "qconnect-secret",
-    series: "Classified",
+    id: "qconnect-2026",
+    series: "Q-Connect",
     episode: "Episode 02",
-    title: "SECRET EVENT",
-    tags: ["Classified"],
+    title: "Q-Connect 2026",
+    tags: ["Quantum Computing", "Research", "Emerging Technology"],
     description:
-      "A classified SciSpace transmission is inbound. Signal locked — details unlock only inside.",
+      "Q-Connect 2026 — our 2nd event and a research-focused session giving students exposure to quantum computing concepts and the Reference Quantum Computer at SRM - AP University. A concise, exciting deep-dive into Quantum Computing, Research, Emerging Technology and real student learning pathways.",
     status: "upcoming",
-    badge: "Classified",
-    registerUrl: "/transmission",
-    secretTarget: "/transmission",
+    badge: "Upcoming — Research Event",
+    registerUrl: "/qconnect/register",
+    themes: [
+      "Quantum Computing",
+      "Research",
+      "Emerging Technology",
+      "Reference Quantum Computer",
+      "Student Learning",
+      "Research Opportunities",
+    ],
+    detailPath: "/qconnect",
   },
 ];
 
@@ -80,7 +88,7 @@ export const pastEvents: ClubEvent[] = [
     title: "Team Selection",
     tags: ["Interviews", "Teams"],
     description:
-      "We interviewed applicants to understand their interests, strengths and capabilities and assigned responsibilities across our eight domains. Teams are now active.",
+      "We interviewed applicants to understand their interests, strengths and capabilities and assigned responsibilities across our nine domains. Teams are now active.",
     status: "past",
     badge: "Completed",
   },

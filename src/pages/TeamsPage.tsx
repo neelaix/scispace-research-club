@@ -16,11 +16,11 @@ export function TeamsPage() {
         eyebrow={`Teams · ${config.CLUB_NAME_FULL}`}
         title={
           <>
-            Eight teams. One{" "}
+            Nine teams. One{" "}
             <span className="text-gradient-brand">research engine</span>.
           </>
         }
-        subtitle="Every part of the club — research, engineering, content, design, events, marketing, outreach and operations — is led by students, for students."
+        subtitle="Every part of the club — research, engineering, content, design, events, marketing, outreach, operations and LinkedIn — is led by students, for students."
       />
 
       <section className="bg-white py-24">

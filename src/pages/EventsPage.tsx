@@ -46,7 +46,7 @@ function InitiativeCard({ event }: { event: ClubEvent }) {
 }
 
 export function EventsPage() {
-  // Secret teaser only — Q-Connect details never render on listing pages.
+  // Q-Connect is an open 2nd event — details render on listing pages.
 
   return (
     <Layout>
@@ -61,13 +61,13 @@ export function EventsPage() {
         subtitle="Screenings, talks, workshops and discussions — every SciSpace event is designed to move you from watching to thinking, and from thinking to doing."
       />
 
-      {/* Upcoming — secret teaser only */}
+      {/* Upcoming — open research event */}
       <section className="bg-white py-16 md:py-24">
         <div className="container-site">
           <SectionHeading
             eyebrow="Upcoming"
-            title="Classified transmission"
-            subtitle="Our second event is locked. Open the secret to reveal it."
+            title="Second event — open for registration"
+            subtitle="Q-Connect 2026 — our research-focused deep-dive into quantum computing."
             align="left"
           />
           <div className="mt-8 grid gap-6">

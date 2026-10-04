@@ -14,7 +14,7 @@ const LIGHT_BG = "#F6F8FA";
 export function RouteTransition({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
   const reduce = useReducedMotion();
-  const isDark = pathname.startsWith("/transmission");
+  const isDark = pathname.startsWith("/qconnect") || pathname.startsWith("/transmission");
 
   useEffect(() => {
     const bg = isDark ? DARK_BG : LIGHT_BG;

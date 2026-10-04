@@ -35,7 +35,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return safeError(res, 429, "Too many requests. Please wait a moment.");
 
   try {
-    const body = (req.body ?? {}) as Record<string, unknown>;
+    const rawBody: unknown = typeof req.body === "string"
+      ? (() => { try { return JSON.parse(req.body as string); } catch { return {}; } })()
+      : (req.body ?? {});
+    const body = rawBody as Record<string, unknown>;
 
     // ── 1. Participant (exactly 1) ─────────────────────────────────────────
     const raw = (body.participant as Record<string, unknown> | undefined) ?? {};

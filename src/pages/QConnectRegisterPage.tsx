@@ -109,15 +109,27 @@ export function QConnectRegisterPage() {
 
     setBusy(true);
     try {
-      const res = await fetch("/api/qconnect/collect", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ participant: p }),
-      });
+      let res: Response;
+      try {
+        res = await fetch("/api/qconnect/collect", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ participant: p }),
+        });
+      } catch {
+        throw new Error("Cannot reach the server. Check your connection and try again.");
+      }
 
       let data: Record<string, unknown>;
-      try { data = await res.json(); }
-      catch { throw new Error(`Server error (${res.status}). Please try again.`); }
+      const text = await res.text();
+      try { data = text ? (JSON.parse(text) as Record<string, unknown>) : {}; }
+      catch {
+        // Non-JSON usually means the API route isn't running (e.g. `vite dev`
+        // without `vercel dev`, or a proxy 500 page) — not a data problem.
+        throw new Error(
+          `Server error (${res.status}). The registration API did not return JSON — if testing locally, run the API with "vercel dev".`
+        );
+      }
       if (!res.ok) throw new Error((data.error as string) || "Could not save your details.");
 
       setLeadId((data.leadId as string) ?? null);
@@ -164,24 +176,30 @@ export function QConnectRegisterPage() {
     setPayBusy(true);
     try {
       const dataBase64 = await fileToBase64(shot);
-      const res = await fetch("/api/qconnect/submit", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          participant: p,
-          uploadedConfirmed: true,
-          screenshot: { fileName: shot.name, mimeType: shot.type, dataBase64 },
-        }),
-      });
+      let res: Response;
+      try {
+        res = await fetch("/api/qconnect/submit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            participant: p,
+            uploadedConfirmed: true,
+            screenshot: { fileName: shot.name, mimeType: shot.type, dataBase64 },
+          }),
+        });
+      } catch {
+        throw new Error("Cannot reach the server. Check your connection and try again.");
+      }
 
       let data: Record<string, unknown>;
-      try { data = await res.json(); }
-      catch { throw new Error(`Server error (${res.status}). Please try again.`); }
+      const text = await res.text();
+      try { data = text ? (JSON.parse(text) as Record<string, unknown>) : {}; }
+      catch { throw new Error(`Server error (${res.status}). The registration API did not return JSON — if testing locally, run the API with "vercel dev".`); }
       if (!res.ok) throw new Error((data.error as string) || "Could not submit your registration.");
 
       const bookingId = data.bookingId as string;
       if (!bookingId) throw new Error("Invalid response from server. Please try again.");
-      nav(`${QCONNECT.SECRET_PATH}/success?id=${bookingId}`);
+      nav(`${QCONNECT.EVENT_PATH}/success?id=${bookingId}`);
     } catch (e) {
       setPayFail((e as Error).message);
     } finally {
@@ -200,7 +218,7 @@ export function QConnectRegisterPage() {
 
           <div className="container-site relative z-10 max-w-2xl">
             {/* Back */}
-            <button type="button" onClick={() => nav(QCONNECT.SECRET_PATH)} className="qconnect-btn-ghost !px-5 !py-2.5 text-xs">
+            <button type="button" onClick={() => nav(QCONNECT.EVENT_PATH)} className="qconnect-btn-ghost !px-5 !py-2.5 text-xs">
               <ArrowLeft className="h-4 w-4" /> Back to Event
             </button>
 

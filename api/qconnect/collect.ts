@@ -24,7 +24,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return safeError(res, 429, "Too many requests. Please wait a moment.");
 
   try {
-    const body = req.body ?? {};
+    const rawBody: unknown = typeof req.body === "string"
+      ? (() => { try { return JSON.parse(req.body as string); } catch { return {}; } })()
+      : (req.body ?? {});
+    const body = rawBody as Record<string, unknown>;
 
     // Accept either { participant: {...} } or flat { fullName, ... }
     const raw: Record<string, unknown> =
@@ -62,6 +65,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const msg = (e as Error).message ?? "";
     if (/not configured/i.test(msg))
       return safeError(res, 500, "Data collection not configured yet. Please try again later.");
+    if (/unauthorized/i.test(msg))
+      return safeError(res, 500, "Data collection rejected the request (bad secret). Please try again later.");
+    if (/non-JSON|unreachable/i.test(msg)) {
+      console.error("[qconnect-collect] upstream:", msg);
+      return safeError(res, 500, "Could not reach the data store. Please try again.");
+    }
     console.error("[qconnect-collect]", msg);
     return safeError(res, 500, "Could not save your details. Please try again.");
   }

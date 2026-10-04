@@ -17,7 +17,7 @@ import {
   QuantumParticles,
 } from "../components/qconnect/QuantumBackdrop";
 
-const base = QCONNECT.SECRET_PATH;
+const base = QCONNECT.EVENT_PATH;
 
 // ─── Shell wrapper ────────────────────────────────────────────────────────────
 function Shell({ children }: { children: React.ReactNode }) {

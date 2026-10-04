@@ -39,6 +39,7 @@ export const teamLeadRoles: string[] = [
   "Marketing & Social Media Lead",
   "Public Relations & Outreach Lead",
   "Operations & Management Lead",
+  "LinkedIn Team Lead",
 ];
 
 export const coreTeamNote =
@@ -61,7 +62,7 @@ export const memberGroups: GroupBlock[] = [
     key: "team-leads",
     label: "Team Leads",
     description:
-      "Leads for each of our eight domains. Names are confirmed as teams finalize.",
+      "Leads for each of our nine domains. Names are confirmed as teams finalize.",
   },
   {
     key: "core",
