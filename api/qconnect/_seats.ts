@@ -63,7 +63,6 @@ export async function getLiveSeatCounts(): Promise<SeatCounts> {
       if (page * 50 >= total || (sheet.rows ?? []).length === 0 || page >= 6) break;
       page++;
     }
-    const seatsLeft = Math.max(0, SEAT_CAPACITY - confirmed - pending);
     return buildCounts(confirmed, pending);
   } catch {
     const s = getStats();

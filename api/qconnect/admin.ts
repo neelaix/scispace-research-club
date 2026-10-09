@@ -17,7 +17,7 @@
 
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import {
-  getRegistration, listRegistrations, updateRegistration,
+  getRegistration, listRegistrations, getStats, updateRegistration,
 } from "./_store.js";
 import { gasCall } from "./_gas.js";
 import { getLiveSeatCounts } from "./_seats.js";
