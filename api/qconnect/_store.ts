@@ -32,24 +32,28 @@ export interface Registration {
 
 // ─── Store (module-level singleton) ──────────────────────────────────────────
 const store = new Map<string, Registration>();
-let   counter = 0;
 
-// ─── ID generation (thread-safe within single process) ───────────────────────
+// ─── ID generation ───────────────────────────────────────────────────────────
+// MUST be globally unique across Vercel serverless instances (each instance
+// has its own memory, so a sequential counter produces duplicate IDs like
+// QCON-2026-000001 on every cold start — GAS then dedupes them via
+// findRow_ and silently drops Sheet rows while Drive files still pile up).
+// Fix: crypto-random 6-digit IDs in 100000–899999 (avoids 999xxx test range).
+// Collision chance with <200 rows is negligible; submit.ts retries on
+// alreadySaved as a safety net.
 export function nextBookingId(): string {
-  counter += 1;
-  // Pad to 6 digits; base off existing store size to survive warm restarts
-  const n = Math.max(counter, store.size + 1);
-  counter = n;
+  for (let i = 0; i < 20; i++) {
+    const n = 100000 + Math.floor(Math.random() * 800000);
+    const id = `QCON-2026-${String(n)}`;
+    if (!store.has(id)) return id;
+  }
+  // Fallback: timestamp-derived (still 6 digits, still avoids 999xxx)
+  const n = 100000 + (Date.now() % 800000);
   return `QCON-2026-${String(n).padStart(6, "0")}`;
 }
 
-/** Ensures counter stays ahead of any existing IDs after a warm-start reload */
-function syncCounter() {
-  for (const id of store.keys()) {
-    const m = /QCON-2026-(\d+)/.exec(id);
-    if (m) counter = Math.max(counter, Number(m[1]));
-  }
-}
+/** No-op kept for callers — counter no longer exists (IDs are random). */
+function syncCounter() {}
 
 // ─── CRUD ─────────────────────────────────────────────────────────────────────
 export function createRegistration(data: Omit<Registration, "bookingId" | "createdAt">): Registration {
@@ -88,7 +92,7 @@ export function listRegistrations(query = "", page = 1, limit = 25) {
 
 export function getStats() {
   let confirmed = 0, pending = 0, failed = 0, cancelled = 0;
-  const capacity = 180;
+  const capacity = 160;
   for (const r of store.values()) {
     if      (r.bookingStatus === "CONFIRMED")         confirmed++;
     else if (r.bookingStatus === "PENDING" || r.bookingStatus === "PAYMENT_PENDING") pending++;

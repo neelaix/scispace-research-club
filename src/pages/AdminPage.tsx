@@ -104,7 +104,7 @@ export function AdminPage() {
             <div className="rounded-2xl border border-brand-dark/10 bg-white p-8 shadow-card dark:border-white/10 dark:bg-[#1E1E24]">
               <h2 className="font-display text-xl font-semibold text-brand-dark dark:text-white">Welcome, Admin</h2>
               <p className="mt-2 text-sm leading-relaxed text-brand-dark/60 dark:text-white/60">
-                Interstellar ticketing via VTApp portal. Q-Connect 2026 bookings below are live from MongoDB.
+                Q-Connect 2026 bookings below are live from Google Sheets (manual UPI verification).
               </p>
               {error && <p role="alert" className="mt-4 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700 dark:bg-red-900/20 dark:text-red-300">{error}</p>}
             </div>

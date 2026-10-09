@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import { Users, UserCheck, MessageSquare, Clapperboard, Sparkles } from "lucide-react";
+import { Users, UserCheck, MessageSquare, Clapperboard, Sparkles, Atom } from "lucide-react";
 
 export interface JourneyStep {
   id: string;
@@ -43,17 +43,26 @@ export const journeySteps: JourneyStep[] = [
     phase: "Phase 04",
     title: "Research-Oriented Events",
     description:
-      "We are planning research-focused activities that connect entertainment, technology and academic discussion.",
+      "Completed our first research-focused activities connecting entertainment, technology and academic discussion.",
     icon: Clapperboard,
-    status: "active",
+    status: "done",
   },
   {
-    id: "whats-next",
-    phase: "What's next",
+    id: "research-reels",
+    phase: "Phase 05",
     title: "Research Reels",
     description:
-      "Launching soon — a research-oriented movie screening and discussion series. Episode 01: Interstellar — A SciSpace Research Club Movie Experience exploring space, astrophysics, relativity and discovery.",
+      "Completed Episode 01: Interstellar — a research-oriented movie screening and discussion on space, astrophysics, relativity and discovery.",
     icon: Sparkles,
-    status: "planned",
+    status: "done",
+  },
+  {
+    id: "qconnect-2026",
+    phase: "Phase 06",
+    title: "Q-Connect 2026",
+    description:
+      "Live now — our second event, a research session on the Reference Quantum Computer at SRM-AP University. Registrations are open.",
+    icon: Atom,
+    status: "active",
   },
 ];

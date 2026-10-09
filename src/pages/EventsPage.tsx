@@ -118,7 +118,7 @@ export function EventsPage() {
           <SectionHeading
             eyebrow="Past events"
             title="The archive"
-            subtitle="We only record what actually happened. Our first events will appear here."
+            subtitle="We only record what actually happened. Interstellar (Episode 01) opened the journey — the archive grows with every event."
             align="left"
           />
           {pastEvents.length === 0 ? (
@@ -131,8 +131,7 @@ export function EventsPage() {
                   No past events yet
                 </p>
                 <p className="mt-2 max-w-md text-sm leading-relaxed text-brand-dark/60">
-                  SciSpace is brand new. This archive fills up as we run our
-                  first screenings, talks and workshops — watch this space.
+                  The archive fills up as we run screenings, talks and workshops — Interstellar is already recorded below.
                 </p>
               </div>
             </Reveal>

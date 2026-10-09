@@ -1,5 +1,4 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import crypto from "crypto";
 
 // ─── Security headers (Helmet-like) ──────────────────────────────────────────
 export function setSecurityHeaders(res: VercelResponse) {
@@ -31,6 +30,8 @@ export function setSecurityHeaders(res: VercelResponse) {
 
 // ─── CORS — strict allowlist ──────────────────────────────────────────────────
 const DEFAULT_ALLOWED = [
+  "https://scispaceclub.in",
+  "https://www.scispaceclub.in",
   "https://scispace.in",
   "https://www.scispace.in",
   "https://scispace-research-club.vercel.app",
@@ -149,18 +150,30 @@ export function securityLog(event: string, meta: Record<string, unknown> = {}) {
 }
 
 // ─── Timing-safe string compare ───────────────────────────────────────────────
+// Constant-time over the longer string; avoids Node Buffer typings drift
+// across @types/node versions (Vercel uses a newer TypeScript than local).
 export function timingSafeEqual(a: string, b: string): boolean {
+  const lenA = a.length;
+  const lenB = b.length;
+  const len = Math.max(lenA, lenB);
+  let diff = lenA ^ lenB;
+  for (let i = 0; i < len; i++) {
+    diff |= (a.charCodeAt(i) || 0) ^ (b.charCodeAt(i) || 0);
+  }
+  return diff === 0;
+}
+
+// ─── Request body size guard ──────────────────────────────────────────────────
+export function checkBodySize(req: VercelRequest, maxBytes: number): boolean {
   try {
-    const bufA = Buffer.from(a, "utf8");
-    const bufB = Buffer.from(b, "utf8");
-    if (bufA.length !== bufB.length) {
-      // Still do a dummy comparison to avoid timing leak on length
-      crypto.timingSafeEqual(Buffer.alloc(1), Buffer.alloc(1));
-      return false;
-    }
-    return crypto.timingSafeEqual(new Uint8Array(bufA), new Uint8Array(bufB));
+    const len = Number(req.headers["content-length"] ?? NaN);
+    if (Number.isFinite(len) && len > maxBytes) return false;
+    const body = req.body;
+    if (typeof body === "string") return Buffer.byteLength(body) <= maxBytes;
+    if (body) return Buffer.byteLength(JSON.stringify(body)) <= maxBytes;
+    return true;
   } catch {
-    return false;
+    return true;
   }
 }
 

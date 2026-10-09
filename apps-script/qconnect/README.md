@@ -50,7 +50,7 @@ Go to **Project Settings → Script Properties** and add:
 | `SPREADSHEET_ID` | Your spreadsheet ID from step 1 |
 | `DRIVE_FOLDER_ID` | Your Drive folder ID from step 2 |
 | `GAS_SECRET` | A long random string — must match `QCONNECT_GAS_SECRET` in Vercel |
-| `MAX_PARTICIPANTS` | `180` (optional, used by `stats` action) |
+| `MAX_PARTICIPANTS` | `160` (optional, used by `stats` action) |
 
 ### 5. Deploy as Web App
 

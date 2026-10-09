@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -19,6 +20,39 @@ const chips = [
 
 export function QConnectPage() {
   const navigate = useNavigate();
+  const [seats, setSeats] = useState<{
+    seatsLeft: number; registered: number; capacity: number; soldOut: boolean;
+  } | null>(null);
+
+  // Live seat counter (Sheet truth, refreshed every 15s + on focus/return)
+  useEffect(() => {
+    let cancelled = false;
+    const load = async () => {
+      try {
+        const r = await fetch("/api/qconnect/seats?fresh=1", { cache: "no-store" });
+        const j = await r.json();
+        if (!cancelled && r.ok && typeof j.seatsLeft === "number") {
+          setSeats({
+            seatsLeft: j.seatsLeft,
+            registered: j.registered ?? 0,
+            capacity: j.capacity ?? QCONNECT.MAX_PARTICIPANTS,
+            soldOut: Boolean(j.soldOut),
+          });
+        }
+      } catch { /* keep static fallback text */ }
+    };
+    load();
+    const t = setInterval(load, 15_000);
+    const onFocus = () => load();
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onFocus);
+    return () => { cancelled = true; clearInterval(t); window.removeEventListener("focus", onFocus); document.removeEventListener("visibilitychange", onFocus); };
+  }, []);
+
+  const seatLabel = seats
+    ? `${seats.seatsLeft} seats left`
+    : `${QCONNECT.MAX_PARTICIPANTS} seats`;
+  const soldOut = seats?.soldOut ?? false;
 
   return (
     <Layout>
@@ -53,16 +87,21 @@ export function QConnectPage() {
                 <motion.button
                   type="button"
                   onClick={() => navigate(`${QCONNECT.EVENT_PATH}/register`)}
+                  disabled={soldOut}
                   initial={{ opacity: 0, y: 14 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.2 }}
-                  whileHover={{ scale: 1.015 }}
-                  whileTap={{ scale: 0.99 }}
-                  className="qconnect-btn-primary w-full !py-4 !text-base"
+                  whileHover={soldOut ? undefined : { scale: 1.015 }}
+                  whileTap={soldOut ? undefined : { scale: 0.99 }}
+                  className="qconnect-btn-primary w-full !py-4 !text-base disabled:opacity-60"
                 >
-                  BOOK NOW · ₹{QCONNECT.TICKET_PRICE} <ArrowRight className="h-5 w-5" aria-hidden="true" />
+                  {soldOut ? "HOUSE FULL" : <>BOOK NOW · ₹{QCONNECT.TICKET_PRICE} <ArrowRight className="h-5 w-5" aria-hidden="true" /></>}
                 </motion.button>
-                <p className="text-center text-xs text-white/45">180 seats · secure Razorpay checkout · instant ticket</p>
+                <p className="text-center text-xs text-white/45">
+                  {seats
+                    ? `${seats.registered}/${seats.capacity} registered · ${seats.seatsLeft} seats left · ticket after verification`
+                    : `${QCONNECT.MAX_PARTICIPANTS} seats · manual UPI verification · ticket after verification`}
+                </p>
               </div>
               {/* RIGHT — about beside poster */}
               <div>
@@ -107,7 +146,7 @@ export function QConnectPage() {
                 <div className="mt-4 flex flex-wrap gap-2">
                   {chips.map((c) => (
                     <span key={c.label} className="qconnect-chip">
-                      <c.icon className="h-4 w-4 text-cyan-300" aria-hidden="true" /> {c.label}
+                      <c.icon className="h-4 w-4 text-cyan-300" aria-hidden="true" /> {c.icon === Users ? seatLabel : c.label}
                     </span>
                   ))}
                 </div>
@@ -137,7 +176,7 @@ export function QConnectPage() {
                       { icon: FlaskConical, t: "Organized by", v: `${QCONNECT.ORGANIZER}, ${QCONNECT.INSTITUTION}` },
                       { icon: MapPin, t: "Venue", v: QCONNECT.EVENT_VENUE },
                       { icon: Cpu, t: "Focus", v: "Reference Quantum Computer" },
-                      { icon: Sparkles, t: "Participation", v: "Individual · multi-seat booking for friends" },
+                      { icon: Sparkles, t: "Participation", v: "Individual · 1 ticket per registration" },
                     ].map((c) => (
                       <div key={c.t} className="flex items-start gap-2.5 rounded-xl border border-white/10 bg-black/25 px-4 py-2.5">
                         <c.icon className="mt-0.5 h-4 w-4 shrink-0 text-cyan-300" aria-hidden="true" />

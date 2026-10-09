@@ -69,6 +69,24 @@ export function QConnectRegisterPage() {
   const [copied,  setCopied]  = useState(false);
   const [shot,    setShot]    = useState<File | null>(null);
   const [ticked,  setTicked]  = useState(false);
+  const [seats,   setSeats]   = useState<{ seatsLeft: number; registered: number; capacity: number } | null>(null);
+
+  // Live seats badge (Sheet truth) — refreshes so submit visibly moves the count
+  useEffect(() => {
+    let cancelled = false;
+    const loadSeats = async () => {
+      try {
+        const r = await fetch("/api/qconnect/seats?fresh=1", { cache: "no-store" });
+        const j = await r.json();
+        if (!cancelled && r.ok && typeof j.seatsLeft === "number") {
+          setSeats({ seatsLeft: j.seatsLeft, registered: j.registered ?? 0, capacity: j.capacity ?? QCONNECT.MAX_PARTICIPANTS });
+        }
+      } catch { /* badge stays hidden */ }
+    };
+    loadSeats();
+    const t = setInterval(loadSeats, 15_000);
+    return () => { cancelled = true; clearInterval(t); };
+  }, []);
 
   const setField = (k: keyof Participant, v: string) => {
     setP((prev) => ({ ...prev, [k]: v }));
@@ -230,6 +248,11 @@ export function QConnectRegisterPage() {
             <p className="mt-1.5 text-sm text-white/60">
               {QCONNECT.EVENT_DATE} · {QCONNECT.EVENT_TIME} · {QCONNECT.EVENT_VENUE}
             </p>
+            {seats && (
+              <p className="mt-2 inline-flex items-center gap-2 rounded-full border border-cyan-300/30 bg-cyan-300/10 px-3 py-1 text-xs font-semibold text-cyan-100">
+                <Ticket className="h-3.5 w-3.5" /> {seats.seatsLeft} seats left · {seats.registered}/{seats.capacity} registered
+              </p>
+            )}
 
             <div className="mt-8 grid gap-6">
               {/* ── Participant details ──────────────────────────────────── */}

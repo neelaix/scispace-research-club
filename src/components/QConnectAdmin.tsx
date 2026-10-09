@@ -52,6 +52,7 @@ export function QConnectAdmin({ token }: { token: string }) {
   const [q,      setQ]      = useState("");
   const [msg,    setMsg]    = useState("");
   const [detail, setDetail] = useState<Detail | null>(null);
+  const [confirming, setConfirming] = useState(false);
 
   const auth = { Authorization: `Bearer ${token}` };
 
@@ -86,6 +87,45 @@ export function QConnectAdmin({ token }: { token: string }) {
       setDetail(d.booking as Detail);
     } catch (e) {
       setMsg((e as Error).message);
+    }
+  };
+
+  const exportCsv = async () => {
+    setMsg("");
+    try {
+      const r = await fetch(`/api/qconnect/admin?format=csv&q=${encodeURIComponent(q)}`, { headers: auth });
+      if (!r.ok) throw new Error("Export failed (unauthorized?).");
+      const blob = await r.blob();
+      const href = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = href;
+      a.download = "qconnect-bookings.csv";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(href);
+    } catch (e) {
+      setMsg((e as Error).message);
+    }
+  };
+
+  const confirmBooking = async (bookingId: string) => {
+    setMsg("");
+    setConfirming(true);
+    try {
+      const r = await fetch("/api/qconnect/admin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", ...auth },
+        body: JSON.stringify({ action: "confirm", bookingId }),
+      });
+      const d = await r.json();
+      if (!r.ok || d.ok === false) throw new Error(d.error || "Confirm failed");
+      setDetail(d.booking as Detail);
+      await load();
+    } catch (e) {
+      setMsg((e as Error).message);
+    } finally {
+      setConfirming(false);
     }
   };
 
@@ -136,12 +176,13 @@ export function QConnectAdmin({ token }: { token: string }) {
         >
           Search
         </button>
-        <a
-          href="/api/qconnect/admin?format=csv"
+        <button
+          type="button"
+          onClick={exportCsv}
           className="rounded-full border border-brand-dark/15 px-5 py-2.5 text-center text-sm font-semibold"
         >
           Export CSV
-        </a>
+        </button>
       </div>
 
       {msg && <p role="status" className="mt-3 text-sm text-red-600 dark:text-red-400">{msg}</p>}
@@ -251,6 +292,16 @@ export function QConnectAdmin({ token }: { token: string }) {
             <p className="mt-4 text-xs text-brand-dark/40 dark:text-white/30">
               Manual UPI flow: verify the payment screenshot in Google Drive, then confirm manually.
             </p>
+            {detail.bookingStatus !== "CONFIRMED" && (
+              <button
+                type="button"
+                disabled={confirming}
+                onClick={() => confirmBooking(detail.bookingId)}
+                className="mt-4 w-full rounded-full bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
+              >
+                {confirming ? "Confirming…" : detail.emailSent ? "Resend confirmation" : "Verify screenshot & confirm + email"}
+              </button>
+            )}
           </div>
         </div>
       )}

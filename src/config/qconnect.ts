@@ -21,11 +21,11 @@ export const QCONNECT = {
   UPI_ID: "9492758101@slc",
   UPI_PAYEE: "SciSpace Research Club",
   UPI_NOTE: "Q-Connect 2026",
-  MAX_PARTICIPANTS: 180,
+  MAX_PARTICIPANTS: 160,
   BOOKING_PREFIX: "QCON-2026-",
   EVENT_PATH: "/qconnect",
-  LOGO_PATH: "./qconnect/q.png",
-  POSTER_PATH: "./qconnect/q.png",
+  LOGO_PATH: "/qconnect/q.png",
+  POSTER_PATH: "/qconnect/q.png",
   DESCRIPTION:
     "Q-Connect 2026 is a research-oriented session designed to give students exposure to quantum computing concepts and the Reference Quantum Computer at SRM - AP University. A concise, exciting deep-dive into Quantum Computing, Research, Emerging Technology and real student learning pathways.",
   THEMES: [

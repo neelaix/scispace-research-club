@@ -51,10 +51,10 @@ export const config = {
   EMAIL: "mailto:spaceresearch.club@vitap.ac.in",
 
   /** Path to the official SciSpace logo asset */
-  LOGO_PATH: "./scispace-logo.jpg",
+  LOGO_PATH: "/scispace-logo.jpg",
 
   /** Website meta — update once the real domain is live. */
-  SITE_URL: "https://scispace.in/", // placeholder domain
+  SITE_URL: "https://scispaceclub.in/",
   SITE_TITLE: "SciSpace Research Club | VIT-AP University",
   SITE_DESCRIPTION:
     "SciSpace Research Club is a student-driven research and technology community at VIT-AP University focused on research, AI, emerging technologies, innovation and collaboration.",

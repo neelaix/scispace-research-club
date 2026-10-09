@@ -15,12 +15,13 @@
  */
 
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { createRegistration, updateRegistration } from "./_store";
-import { gasCall } from "./_gas";
+import { createRegistration, updateRegistration } from "./_store.js";
+import { gasCall } from "./_gas.js";
+import { getLiveSeatCounts } from "./_seats.js";
 import {
   handleCors, setSecurityHeaders, rateLimit, safeError,
   sanitizeString, isValidEmail, isValidPhone,
-} from "../_security";
+} from "../_security.js";
 
 const TICKET_PRICE = 50;
 const MAX_BYTES = 5 * 1024 * 1024;
@@ -78,7 +79,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (dataBase64.length > 8 * 1024 * 1024)
       return safeError(res, 400, "Screenshot must be 5MB or smaller.");
 
-    // ── 4. Create PENDING registration ─────────────────────────────────────
+    // ── 4. Capacity guard (160 seats: PENDING + CONFIRMED occupy seats) ────
+    // Fail open on counting errors — the GAS writes below are the real judge
+    // and will fail anyway if the backend is unreachable.
+    try {
+      const seats = await getLiveSeatCounts();
+      if (!seats.fallback && seats.soldOut)
+        return safeError(res, 400, "House full — all 160 seats for Q-Connect 2026 are taken.");
+    } catch { /* fail open */ }
+
+    // ── 5. Create PENDING registration ─────────────────────────────────────
     const reg = createRegistration({
       event:              "Q-Connect 2026",
       fullName:           p.fullName,
@@ -118,8 +128,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     updateRegistration(reg.bookingId, { screenshotFileId: fileId, screenshotUrl: fileUrl });
 
     // ── 6. Save PENDING row to Sheets (structure unchanged) ────────────────
+    // Retry on random-ID collision: if GAS reports alreadySaved, the ID
+    // belongs to someone else — mint a fresh registration and retry once.
+    // (With random IDs this is near-impossible, but cheap insurance.)
+    let bookingId = reg.bookingId;
     try {
-      await gasCall("savePending", {
+      const saved = await gasCall<{ ok: boolean; alreadySaved?: boolean }>("savePending", {
         bookingId:          reg.bookingId,
         fullName:           p.fullName,
         registrationNumber: p.registrationNumber,
@@ -129,6 +143,36 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         paymentStatus:      "PENDING",
         bookingStatus:      "PENDING",
       });
+      if ((saved as { alreadySaved?: boolean }).alreadySaved) {
+        // Verify whether the existing row is ours or a collision.
+        let collision = true;
+        try {
+          const existing = await gasCall<{ ok: boolean; registrationNumber?: string; email?: string }>(
+            "get", { bookingId: reg.bookingId }
+          );
+          const samePerson =
+            String(existing.registrationNumber ?? "").toUpperCase() === p.registrationNumber &&
+            String(existing.email ?? "").toLowerCase() === p.email;
+          collision = !samePerson;
+        } catch { collision = true; }
+        if (collision) {
+          const reg2 = createRegistration({
+            event: "Q-Connect 2026",
+            fullName: p.fullName, registrationNumber: p.registrationNumber,
+            phone: p.phone, email: p.email, amount: TICKET_PRICE,
+            cashfreeOrderId: "", cashfreePaymentId: "",
+            screenshotFileId: fileId, screenshotUrl: fileUrl,
+            paymentStatus: "PENDING", bookingStatus: "PENDING", emailSent: false,
+          });
+          await gasCall("savePending", {
+            bookingId: reg2.bookingId, fullName: p.fullName,
+            registrationNumber: p.registrationNumber, phone: p.phone,
+            email: p.email, amount: TICKET_PRICE,
+            paymentStatus: "PENDING", bookingStatus: "PENDING",
+          });
+          bookingId = reg2.bookingId;
+        }
+      }
     } catch (e) {
       console.error("[qconnect-submit] GAS savePending failed:", (e as Error).message);
       // Screenshot is already in Drive + store has the record; surface as error
@@ -136,7 +180,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return safeError(res, 500, "Screenshot saved but sheet entry failed. Please submit again.");
     }
 
-    return res.status(200).json({ ok: true, bookingId: reg.bookingId, amount: TICKET_PRICE });
+    // ── 7. Fresh seat counts for immediate UI update (fail-open) ───────────
+    let seats: Record<string, unknown> | null = null;
+    try {
+      seats = (await getLiveSeatCounts()) as unknown as Record<string, unknown>;
+    } catch { seats = null; }
+
+    return res.status(200).json({ ok: true, bookingId, amount: TICKET_PRICE, seats });
   } catch (e) {
     console.error("[qconnect-submit]", (e as Error).message);
     return safeError(res, 500, "Could not submit your registration. Please try again.");

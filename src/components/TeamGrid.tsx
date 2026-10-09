@@ -18,7 +18,7 @@ export function TeamGrid({ heading = true }: { heading?: boolean }) {
           subtitle="Every part of SciSpace — from deep research to design, events to outreach — is run by our nine student domains."
         />
       )}
-      <Stagger className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <Stagger className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {teams.map((team) => (
           <TeamCard key={team.id} team={team} />
         ))}

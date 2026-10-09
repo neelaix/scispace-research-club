@@ -336,16 +336,29 @@ function handleList_(body) {
 }
 
 // ─── ACTION: stats ────────────────────────────────────────────────────────────
+// Counts by Booking Status (PENDING + CONFIRMED both occupy a seat).
+// Test rows (QCON-2026-999xxx) are excluded so dummy data never eats seats.
 function handleStats_() {
   var sh       = sheet_();
   var last     = sh.getLastRow();
-  var confirmed = last > 1 ? last - 1 : 0; // every saved row is CONFIRMED
-  var capacity  = Number(prop_("MAX_PARTICIPANTS", "180"));
+  var confirmed = 0, pending = 0;
+  if (last > 1) {
+    var vals = sh.getRange(2, 1, last - 1, COLS.TOTAL).getValues();
+    for (var i = 0; i < vals.length; i++) {
+      var id = String(vals[i][0] || "");
+      if (/^QCON-2026-999\d{3}$/.test(id)) continue; // test rows
+      var st = String(vals[i][COLS.BOOKING_STATUS - 1] || "").toUpperCase();
+      if (st === "CONFIRMED") confirmed++;
+      else pending++;
+    }
+  }
+  var capacity  = Number(prop_("MAX_PARTICIPANTS", "160")) || 160;
   return ok_({
     ok:        true,
     confirmed: confirmed,
+    pending:   pending,
     capacity:  capacity,
-    seatsLeft: Math.max(0, capacity - confirmed)
+    seatsLeft: Math.max(0, capacity - confirmed - pending)
   });
 }
 

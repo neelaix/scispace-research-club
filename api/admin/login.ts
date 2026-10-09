@@ -8,8 +8,8 @@ import {
   getClientIp,
   securityLog,
   safeError,
-} from "../_security";
-import { createSession, isPasswordValid, getAdminUsername } from "./_auth";
+} from "../_security.js";
+import { createSession, isPasswordValid, getAdminUsername } from "./_auth.js";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   setSecurityHeaders(res);

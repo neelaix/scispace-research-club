@@ -60,7 +60,7 @@ export const teams: Team[] = [
     description:
       "Visual identity, posters, event creatives, presentations, branding and creative communication.",
     icon: Palette,
-    color: "blue",
+    color: "orange",
   },
   {
     id: "events-workshops",
@@ -70,7 +70,7 @@ export const teams: Team[] = [
     description:
       "Research talks, workshops, movie/research screenings, technical sessions and student activities.",
     icon: CalendarDays,
-    color: "orange",
+    color: "blue",
   },
   {
     id: "marketing-social",
@@ -80,7 +80,7 @@ export const teams: Team[] = [
     description:
       "Digital campaigns, social media, content strategy, announcements and community growth.",
     icon: Megaphone,
-    color: "blue",
+    color: "orange",
   },
   {
     id: "pr-outreach",
@@ -90,7 +90,7 @@ export const teams: Team[] = [
     description:
       "External collaborations, speaker outreach, partnerships, networking and communication.",
     icon: Handshake,
-    color: "orange",
+    color: "blue",
   },
   {
     id: "operations-management",
@@ -100,7 +100,7 @@ export const teams: Team[] = [
     description:
       "Planning, coordination, scheduling, logistics, internal systems and execution.",
     icon: Settings2,
-    color: "blue",
+    color: "orange",
   },
   {
     id: "linkedin-team",
@@ -110,6 +110,6 @@ export const teams: Team[] = [
     description:
       "LinkedIn strategy, professional branding, research highlights, achievements and community growth on LinkedIn.",
     icon: Linkedin,
-    color: "orange",
+    color: "blue",
   },
 ];

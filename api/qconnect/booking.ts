@@ -7,8 +7,9 @@
  */
 
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { getRegistration } from "./_store";
-import { handleCors, setSecurityHeaders, rateLimit, safeError } from "../_security";
+import { getRegistration } from "./_store.js";
+import { gasCall } from "./_gas.js";
+import { handleCors, setSecurityHeaders, rateLimit, safeError } from "../_security.js";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   setSecurityHeaders(res);
@@ -22,14 +23,33 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (!/^QCON-2026-\d{6}$/.test(id)) return safeError(res, 400, "Invalid booking ID.");
 
   const reg = getRegistration(id);
-  if (!reg) return safeError(res, 404, "Booking not found.");
+  if (reg) {
+    return res.status(200).json({
+      bookingId:         reg.bookingId,
+      totalAmount:       reg.amount,
+      cashfreeOrderId:   reg.cashfreeOrderId,
+      cashfreePaymentId: reg.cashfreePaymentId,
+      paymentStatus:     reg.paymentStatus,
+      bookingStatus:     reg.bookingStatus,
+    });
+  }
 
-  return res.status(200).json({
-    bookingId:         reg.bookingId,
-    totalAmount:       reg.amount,
-    cashfreeOrderId:   reg.cashfreeOrderId,
-    cashfreePaymentId: reg.cashfreePaymentId,
-    paymentStatus:     reg.paymentStatus,
-    bookingStatus:     reg.bookingStatus,
-  });
+  // Fallback to Google Sheets (source of truth) when the in-memory
+  // store missed (cold start / another serverless instance).
+  try {
+    const sheet = await gasCall<{
+      ok: boolean; bookingId?: string; amount?: number;
+      cashfreePaymentId?: string; paymentStatus?: string; bookingStatus?: string;
+    }>("get", { bookingId: id });
+    return res.status(200).json({
+      bookingId:         sheet.bookingId ?? id,
+      totalAmount:       Number(sheet.amount ?? 50),
+      cashfreeOrderId:   "",
+      cashfreePaymentId: sheet.cashfreePaymentId ?? "",
+      paymentStatus:     sheet.paymentStatus ?? "PENDING",
+      bookingStatus:     sheet.bookingStatus ?? "PENDING",
+    });
+  } catch {
+    return safeError(res, 404, "Booking not found.");
+  }
 }

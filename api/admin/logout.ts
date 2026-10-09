@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { setSecurityHeaders, handleCors, safeError } from "../_security";
-import { getTokenFromRequest, destroySession, verifyToken } from "./_auth";
-import { getClientIp, securityLog } from "../_security";
+import { setSecurityHeaders, handleCors, safeError } from "../_security.js";
+import { getTokenFromRequest, destroySession, verifyToken } from "./_auth.js";
+import { getClientIp, securityLog } from "../_security.js";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   setSecurityHeaders(res);

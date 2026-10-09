@@ -8,7 +8,7 @@
  */
 
 import { Resend } from "resend";
-import type { Registration } from "./_store";
+import type { Registration } from "./_store.js";
 
 function getResend(): Resend {
   const key = process.env.RESEND_API_KEY;

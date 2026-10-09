@@ -9,11 +9,11 @@
  */
 
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { gasCall } from "./_gas";
+import { gasCall } from "./_gas.js";
 import {
   handleCors, setSecurityHeaders, rateLimit, safeError,
   sanitizeString, isValidEmail, isValidPhone,
-} from "../_security";
+} from "../_security.js";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   setSecurityHeaders(res);
@@ -71,7 +71,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       console.error("[qconnect-collect] upstream:", msg);
       return safeError(res, 500, "Could not reach the data store. Please try again.");
     }
+    // Forward GAS validation errors (safe: no secrets) so the user sees
+    // the real reason instead of a generic failure.
+    if (/^Enter a valid|^Invalid|^Missing|^Screenshot must|^Only /i.test(msg))
+      return safeError(res, 400, msg);
     console.error("[qconnect-collect]", msg);
-    return safeError(res, 500, "Could not save your details. Please try again.");
+    return safeError(res, 500, `Could not save your details. (${msg.slice(0, 120)})`);
   }
 }

@@ -11,7 +11,7 @@ const VTAPP_URL = "https://vtapp.vitap.ac.in/events/interstellar-a-journey-beyon
 export function EventCard({ event }: { event: ClubEvent }) {
   const navigate = useNavigate();
   const registerUrl = event.registerUrl;
-  const isInterstellar = event.title.toLowerCase() === "interstellar";
+  const isInterstellar = event.id === "research-reels-ep01" || event.title.toLowerCase() === "interstellar";
   const vtappUrl = registerUrl || VTAPP_URL;
   const openRegister = () => {
     if (isInterstellar) {

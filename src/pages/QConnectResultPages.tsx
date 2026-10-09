@@ -62,6 +62,7 @@ export function QConnectSuccessPage() {
 
   const [data, setData] = useState<BookingStatus | null>(null);
   const [err, setErr] = useState("");
+  const [seatsLeft, setSeatsLeft] = useState<number | null>(null);
 
   // Polling for PENDING → CONFIRMED transition
   // Manual UPI flow: booking stays PENDING until an admin verifies the
@@ -93,6 +94,11 @@ export function QConnectSuccessPage() {
 
   useEffect(() => {
     fetchStatus();
+    // Fresh seat count so the user sees their registration moved the counter
+    fetch("/api/qconnect/seats?fresh=1", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((j) => { if (typeof j.seatsLeft === "number") setSeatsLeft(j.seatsLeft); })
+      .catch(() => {});
     // Start polling — stops on terminal state or after MAX_POLLS
     pollRef.current = setInterval(() => {
       pollCount.current += 1;
@@ -181,6 +187,7 @@ export function QConnectSuccessPage() {
           </h1>
           <p className="mt-1.5 text-sm text-white/60">
             Your details and payment screenshot have been received. Status: PENDING.
+            {seatsLeft !== null && <> Only {seatsLeft} seats left — you're in!</>}
           </p>
 
           <dl className="mx-auto mt-7 w-full max-w-md overflow-hidden rounded-2xl border border-white/10 bg-black/30 text-left text-sm">
