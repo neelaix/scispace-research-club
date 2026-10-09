@@ -11,12 +11,13 @@ import { getStats } from "./_store.js";
 export const SEAT_CAPACITY = 160;
 const TEST_ID = /^QCON-2026-999\d{3}$/;
 
-// Manual baseline: 22 verified registrations lost to the pre-fix duplicate
-// booking-ID bug (their screenshots are in Drive but Sheets has no rows).
-// Displayed total = live Sheet count + this baseline (18 + 22 = 40,
-// 160 − 40 = 120 seats left). New submissions add on top normally.
+// Manual baseline: verified registrations missing from the Sheet
+// (22 lost to the pre-fix duplicate booking-ID bug + 6 whose Sheet write
+// failed after their screenshot saved — their screenshots are in Drive).
+// Displayed total = live Sheet count + this baseline (24 + 28 = 52,
+// 160 − 52 = 108 seats left). New submissions add on top normally.
 // TODO: set to 0 once the missing rows are backfilled in the Sheet.
-const MANUAL_BASELINE = 22;
+const MANUAL_BASELINE = 28;
 
 function buildCounts(confirmed: number, pending: number, fallback = false): SeatCounts {
   const registered = Math.min(SEAT_CAPACITY, confirmed + pending + MANUAL_BASELINE);
