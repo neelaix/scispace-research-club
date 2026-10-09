@@ -10,6 +10,7 @@
 
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { gasCall } from "./_gas.js";
+import { REGISTRATIONS_OPEN, REGISTRATIONS_CLOSED_MESSAGE } from "./_window.js";
 import {
   handleCors, setSecurityHeaders, rateLimit, safeError,
   sanitizeString, isValidEmail, isValidPhone,
@@ -22,6 +23,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== "POST")   return safeError(res, 405, "Method not allowed");
   if (!rateLimit(req, "qconnect-collect", 10, 60_000))
     return safeError(res, 429, "Too many requests. Please wait a moment.");
+  if (!REGISTRATIONS_OPEN)
+    return safeError(res, 403, REGISTRATIONS_CLOSED_MESSAGE);
 
   try {
     const rawBody: unknown = typeof req.body === "string"

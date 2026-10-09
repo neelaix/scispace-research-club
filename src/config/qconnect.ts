@@ -22,6 +22,10 @@ export const QCONNECT = {
   UPI_PAYEE: "SciSpace Research Club",
   UPI_NOTE: "Q-Connect 2026",
   MAX_PARTICIPANTS: 160,
+  // Registration window switch — set to false to pause registrations
+  // (shows "closed for today" banner + disables booking), true to resume.
+  REGISTRATIONS_OPEN: false,
+  REGISTRATIONS_CLOSED_NOTE: "Registrations are closed for today. We will resume tomorrow.",
   BOOKING_PREFIX: "QCON-2026-",
   EVENT_PATH: "/qconnect",
   LOGO_PATH: "/qconnect/q.png",

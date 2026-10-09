@@ -87,18 +87,23 @@ export function QConnectPage() {
                     </figcaption>
                   </figure>
                 </Reveal>
+                {!QCONNECT.REGISTRATIONS_OPEN && (
+                  <p role="status" className="rounded-xl border border-amber-300/30 bg-amber-400/10 px-4 py-3 text-center text-sm font-semibold text-amber-200">
+                    ⏸️ {QCONNECT.REGISTRATIONS_CLOSED_NOTE}
+                  </p>
+                )}
                 <motion.button
                   type="button"
                   onClick={() => navigate(`${QCONNECT.EVENT_PATH}/register`)}
-                  disabled={soldOut}
+                  disabled={soldOut || !QCONNECT.REGISTRATIONS_OPEN}
                   initial={{ opacity: 0, y: 14 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.2 }}
-                  whileHover={soldOut ? undefined : { scale: 1.015 }}
-                  whileTap={soldOut ? undefined : { scale: 0.99 }}
+                  whileHover={soldOut || !QCONNECT.REGISTRATIONS_OPEN ? undefined : { scale: 1.015 }}
+                  whileTap={soldOut || !QCONNECT.REGISTRATIONS_OPEN ? undefined : { scale: 0.99 }}
                   className="qconnect-btn-primary w-full !py-4 !text-base disabled:opacity-60"
                 >
-                  {soldOut ? "HOUSE FULL" : <>BOOK NOW · ₹{QCONNECT.TICKET_PRICE} <ArrowRight className="h-5 w-5" aria-hidden="true" /></>}
+                  {soldOut ? "HOUSE FULL" : !QCONNECT.REGISTRATIONS_OPEN ? "REGISTRATIONS PAUSED" : <>BOOK NOW · ₹{QCONNECT.TICKET_PRICE} <ArrowRight className="h-5 w-5" aria-hidden="true" /></>}
                 </motion.button>
                 <p className="text-center text-xs text-white/45">
                   {seats

@@ -118,6 +118,10 @@ export function QConnectRegisterPage() {
   const submitDetails = async () => {
     if (busy) return;
     setFail("");
+    if (!QCONNECT.REGISTRATIONS_OPEN) {
+      setFail(`${QCONNECT.REGISTRATIONS_CLOSED_NOTE} Thank you for the amazing response!`);
+      return;
+    }
 
     // Validate
     const fieldErrs = validate(p);
@@ -190,6 +194,10 @@ export function QConnectRegisterPage() {
   const submitRegistration = async () => {
     if (payBusy || !saved) return;
     setPayFail("");
+    if (!QCONNECT.REGISTRATIONS_OPEN) {
+      setPayFail(`${QCONNECT.REGISTRATIONS_CLOSED_NOTE} Thank you for the amazing response!`);
+      return;
+    }
     if (!shot) { setPayFail("Please upload your payment screenshot."); return; }
     if (!ticked) { setPayFail("Please tick “I have uploaded my payment screenshot” to continue."); return; }
 
@@ -255,6 +263,11 @@ export function QConnectRegisterPage() {
             {seats && (
               <p className="mt-2 inline-flex items-center gap-2 rounded-full border border-cyan-300/30 bg-cyan-300/10 px-3 py-1 text-xs font-semibold text-cyan-100">
                 <Ticket className="h-3.5 w-3.5" /> {seats.seatsLeft} seats left · {seats.registered}/{seats.capacity} registered
+              </p>
+            )}
+            {!QCONNECT.REGISTRATIONS_OPEN && (
+              <p role="status" className="mt-3 rounded-xl border border-amber-300/30 bg-amber-400/10 px-4 py-3 text-sm font-semibold text-amber-200">
+                ⏸️ {QCONNECT.REGISTRATIONS_CLOSED_NOTE} Thank you for the amazing response!
               </p>
             )}
 
@@ -325,7 +338,8 @@ export function QConnectRegisterPage() {
                   <button
                     type="button"
                     onClick={submitDetails}
-                    disabled={busy}
+                    disabled={busy || !QCONNECT.REGISTRATIONS_OPEN}
+                    title={!QCONNECT.REGISTRATIONS_OPEN ? QCONNECT.REGISTRATIONS_CLOSED_NOTE : undefined}
                     className="qconnect-btn-primary mt-5 w-full disabled:opacity-60 group"
                   >
                     {busy ? (
@@ -468,8 +482,8 @@ export function QConnectRegisterPage() {
                 <button
                   type="button"
                   onClick={submitRegistration}
-                  disabled={!saved || !shot || !ticked || payBusy}
-                  title={!saved ? "Save your details first" : "Submit after uploading + ticking confirmation"}
+                  disabled={!saved || !shot || !ticked || payBusy || !QCONNECT.REGISTRATIONS_OPEN}
+                  title={!QCONNECT.REGISTRATIONS_OPEN ? QCONNECT.REGISTRATIONS_CLOSED_NOTE : !saved ? "Save your details first" : "Submit after uploading + ticking confirmation"}
                   className="qconnect-btn-primary mt-5 w-full disabled:opacity-60 group"
                 >
                   {payBusy ? (
