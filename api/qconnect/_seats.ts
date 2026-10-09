@@ -11,6 +11,27 @@ import { getStats } from "./_store.js";
 export const SEAT_CAPACITY = 160;
 const TEST_ID = /^QCON-2026-999\d{3}$/;
 
+// Manual baseline: 22 verified registrations lost to the pre-fix duplicate
+// booking-ID bug (their screenshots are in Drive but Sheets has no rows).
+// Displayed total = live Sheet count + this baseline (18 + 22 = 40,
+// 160 − 40 = 120 seats left). New submissions add on top normally.
+// TODO: set to 0 once the missing rows are backfilled in the Sheet.
+const MANUAL_BASELINE = 22;
+
+function buildCounts(confirmed: number, pending: number, fallback = false): SeatCounts {
+  const registered = Math.min(SEAT_CAPACITY, confirmed + pending + MANUAL_BASELINE);
+  const seatsLeft = Math.max(0, SEAT_CAPACITY - registered);
+  return {
+    capacity: SEAT_CAPACITY,
+    confirmed,
+    pending,
+    registered,
+    seatsLeft,
+    soldOut: seatsLeft <= 0,
+    ...(fallback ? { fallback: true as const } : {}),
+  };
+}
+
 export interface SeatCounts {
   capacity: number;
   confirmed: number;
@@ -43,27 +64,11 @@ export async function getLiveSeatCounts(): Promise<SeatCounts> {
       page++;
     }
     const seatsLeft = Math.max(0, SEAT_CAPACITY - confirmed - pending);
-    return {
-      capacity: SEAT_CAPACITY,
-      confirmed,
-      pending,
-      registered: confirmed + pending,
-      seatsLeft,
-      soldOut: seatsLeft <= 0,
-    };
+    return buildCounts(confirmed, pending);
   } catch {
     const s = getStats();
     const confirmed = Number(s.confirmed ?? 0);
     const pending = Number(s.pending ?? 0);
-    const seatsLeft = Math.max(0, SEAT_CAPACITY - confirmed - pending);
-    return {
-      capacity: SEAT_CAPACITY,
-      confirmed,
-      pending,
-      registered: confirmed + pending,
-      seatsLeft,
-      soldOut: seatsLeft <= 0,
-      fallback: true,
-    };
+    return buildCounts(confirmed, pending, true);
   }
 }

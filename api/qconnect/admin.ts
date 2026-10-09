@@ -17,7 +17,7 @@
 
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import {
-  getRegistration, listRegistrations, getStats, updateRegistration,
+  getRegistration, listRegistrations, updateRegistration,
 } from "./_store.js";
 import { gasCall } from "./_gas.js";
 import { getLiveSeatCounts } from "./_seats.js";
@@ -69,18 +69,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     if (req.method !== "GET") return safeError(res, 405, "Method not allowed");
 
-    // Stats (store first, Sheet fallback when empty)
+    // Stats (Sheet truth first — the in-memory store only sees this instance)
     if (url.includes("/stats") || req.query.view === "stats") {
-      const s = getStats();
-      if (s.confirmed + s.pending + s.failed + s.cancelled > 0) {
-        return res.status(200).json(withStatAliases(s as unknown as Record<string, number>));
-      }
       try {
         // Full paginated count from Sheets (source of truth), not just page 1.
         const c = await getLiveSeatCounts();
         const stats = { confirmed: c.confirmed, pending: c.pending, failed: 0, cancelled: 0, capacity: c.capacity, seatsLeft: c.seatsLeft };
         return res.status(200).json(withStatAliases(stats as unknown as Record<string, number>));
       } catch {
+        const s = getStats();
         return res.status(200).json(withStatAliases(s as unknown as Record<string, number>));
       }
     }
