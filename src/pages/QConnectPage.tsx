@@ -42,7 +42,7 @@ export function QConnectPage() {
       } catch { /* keep static fallback text */ }
     };
     load();
-    const t = setInterval(load, 15_000);
+    const t = setInterval(load, 10_000);
     const onFocus = () => load();
     window.addEventListener("focus", onFocus);
     document.addEventListener("visibilitychange", onFocus);
@@ -99,7 +99,17 @@ export function QConnectPage() {
                 </motion.button>
                 <p className="text-center text-xs text-white/45">
                   {seats
-                    ? `${seats.registered}/${seats.capacity} registered · ${seats.seatsLeft} seats left · ticket after verification`
+                    ? (
+                      <span className="inline-flex items-center gap-1.5">
+                        <span className="relative flex h-1.5 w-1.5">
+                          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-300 opacity-75" />
+                          <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-300" />
+                        </span>
+                        <motion.span key={`${seats.registered}-${seats.seatsLeft}`} initial={{ scale: 1.2, opacity: 0.4 }} animate={{ scale: 1, opacity: 1 }}>
+                          {seats.registered}/{seats.capacity} registered · {seats.seatsLeft} seats left · ticket after verification
+                        </motion.span>
+                      </span>
+                      )
                     : `${QCONNECT.MAX_PARTICIPANTS} seats · manual UPI verification · ticket after verification`}
                 </p>
               </div>

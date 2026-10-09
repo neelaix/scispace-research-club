@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   AlertTriangle,
@@ -58,11 +58,19 @@ function GlowRing({ color }: { color: string }) {
 // ─── QConnectSuccessPage ──────────────────────────────────────────────────────
 export function QConnectSuccessPage() {
   const [params] = useSearchParams();
+  const location = useLocation();
   const id = params.get("id") ?? "";
 
   const [data, setData] = useState<BookingStatus | null>(null);
   const [err, setErr] = useState("");
-  const [seatsLeft, setSeatsLeft] = useState<number | null>(null);
+  // Instant value from the submit response (already includes this booking),
+  // then kept live by polling below.
+  const navSeats = (location.state as { seats?: { seatsLeft?: number; registered?: number; capacity?: number } } | null)?.seats;
+  const [seats, setSeats] = useState<{ seatsLeft: number; registered: number; capacity: number } | null>(
+    typeof navSeats?.seatsLeft === "number"
+      ? { seatsLeft: navSeats.seatsLeft, registered: navSeats.registered ?? 0, capacity: navSeats.capacity ?? QCONNECT.MAX_PARTICIPANTS }
+      : null
+  );
 
   // Polling for PENDING → CONFIRMED transition
   // Manual UPI flow: booking stays PENDING until an admin verifies the
@@ -92,13 +100,22 @@ export function QConnectSuccessPage() {
     }
   };
 
+  const fetchSeats = async () => {
+    try {
+      const r = await fetch("/api/qconnect/seats?fresh=1", { cache: "no-store" });
+      const j = await r.json();
+      if (r.ok && typeof j.seatsLeft === "number") {
+        setSeats({ seatsLeft: j.seatsLeft, registered: j.registered ?? 0, capacity: j.capacity ?? QCONNECT.MAX_PARTICIPANTS });
+      }
+    } catch { /* keep last known value */ }
+  };
+
   useEffect(() => {
     fetchStatus();
-    // Fresh seat count so the user sees their registration moved the counter
-    fetch("/api/qconnect/seats?fresh=1", { cache: "no-store" })
-      .then((r) => r.json())
-      .then((j) => { if (typeof j.seatsLeft === "number") setSeatsLeft(j.seatsLeft); })
-      .catch(() => {});
+    // Live seat counter — refreshes every 10s so the page visibly tracks
+    // new registrations without a manual refresh.
+    if (!navSeats || typeof navSeats.seatsLeft !== "number") fetchSeats();
+    const seatsTimer = setInterval(fetchSeats, 10_000);
     // Start polling — stops on terminal state or after MAX_POLLS
     pollRef.current = setInterval(() => {
       pollCount.current += 1;
@@ -109,7 +126,7 @@ export function QConnectSuccessPage() {
       }
       fetchStatus();
     }, 3000);
-    return () => { if (pollRef.current) clearInterval(pollRef.current); };
+    return () => { if (pollRef.current) clearInterval(pollRef.current); clearInterval(seatsTimer); };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
@@ -187,7 +204,17 @@ export function QConnectSuccessPage() {
           </h1>
           <p className="mt-1.5 text-sm text-white/60">
             Your details and payment screenshot have been received. Status: PENDING.
-            {seatsLeft !== null && <> Only {seatsLeft} seats left — you're in!</>}
+            {seats !== null && (
+              <span className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-cyan-300/30 bg-cyan-300/10 px-3 py-1 text-xs font-semibold text-cyan-100">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-300 opacity-75" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-300" />
+                </span>
+                <motion.span key={seats.seatsLeft} initial={{ scale: 1.25 }} animate={{ scale: 1 }}>
+                  {seats.registered}/{seats.capacity} registered · Only {seats.seatsLeft} seats left — you're in!
+                </motion.span>
+              </span>
+            )}
           </p>
 
           <dl className="mx-auto mt-7 w-full max-w-md overflow-hidden rounded-2xl border border-white/10 bg-black/30 text-left text-sm">

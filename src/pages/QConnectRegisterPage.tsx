@@ -84,7 +84,7 @@ export function QConnectRegisterPage() {
       } catch { /* badge stays hidden */ }
     };
     loadSeats();
-    const t = setInterval(loadSeats, 15_000);
+    const t = setInterval(loadSeats, 10_000);
     return () => { cancelled = true; clearInterval(t); };
   }, []);
 
@@ -217,7 +217,9 @@ export function QConnectRegisterPage() {
 
       const bookingId = data.bookingId as string;
       if (!bookingId) throw new Error("Invalid response from server. Please try again.");
-      nav(`${QCONNECT.EVENT_PATH}/success?id=${bookingId}`);
+      // Pass the fresh seat count so the success page shows the moved
+      // counter instantly (no waiting for the next poll cycle).
+      nav(`${QCONNECT.EVENT_PATH}/success?id=${bookingId}`, { state: { seats: data.seats ?? null } });
     } catch (e) {
       setPayFail((e as Error).message);
     } finally {
