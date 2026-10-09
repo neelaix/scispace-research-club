@@ -105,7 +105,9 @@ export function QConnectSuccessPage() {
       const r = await fetch("/api/qconnect/seats?fresh=1", { cache: "no-store" });
       const j = await r.json();
       if (r.ok && typeof j.seatsLeft === "number") {
-        setSeats({ seatsLeft: j.seatsLeft, registered: j.registered ?? 0, capacity: j.capacity ?? QCONNECT.MAX_PARTICIPANTS });
+        const next = { seatsLeft: j.seatsLeft, registered: j.registered ?? 0, capacity: j.capacity ?? QCONNECT.MAX_PARTICIPANTS };
+        // Glitch guard: a fallback response must never lower the shown count.
+        setSeats((prev) => (prev && j.fallback === true && next.registered < prev.registered ? prev : next));
       }
     } catch { /* keep last known value */ }
   };

@@ -10,22 +10,29 @@
 
 export async function gasCall<T = unknown>(
   action: string,
-  payload: Record<string, unknown> = {}
+  payload: Record<string, unknown> = {},
+  timeoutMs = 45_000,
 ): Promise<T> {
   const url    = process.env.QCONNECT_GAS_URL;
   const secret = process.env.QCONNECT_GAS_SECRET;
 
   if (!url || !secret) throw new Error("QCONNECT backend not configured.");
 
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), timeoutMs);
   let res: Response;
   try {
     res = await fetch(url, {
       method:  "POST",
       headers: { "Content-Type": "application/json" },
       body:    JSON.stringify({ action, secret, ...payload }),
+      signal:  ctrl.signal,
     });
   } catch (e) {
+    if ((e as Error).name === "AbortError") throw new Error(`GAS timed out after ${timeoutMs}ms.`);
     throw new Error(`GAS unreachable: ${(e as Error).message}`);
+  } finally {
+    clearTimeout(timer);
   }
 
   const text = await res.text();

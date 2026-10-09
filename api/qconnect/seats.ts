@@ -30,7 +30,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const counts = await getLiveSeatCounts();
     const body: Record<string, unknown> = { ok: true, ...counts };
-    cache = { at: Date.now(), body };
+    // Never cache fallback responses — a cached glitch would keep serving
+    // the dipped number to every visitor for the whole cache window.
+    if (!counts.fallback) cache = { at: Date.now(), body };
     res.setHeader("Cache-Control", "no-store");
     return res.status(200).json(body);
   } catch (e) {

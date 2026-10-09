@@ -45,30 +45,58 @@ export interface SeatCounts {
 
 export async function getLiveSeatCounts(): Promise<SeatCounts> {
   try {
-    let confirmed = 0;
-    let pending = 0;
-    let page = 1;
-    for (;;) {
-      const sheet = await gasCall<{
-        ok: boolean;
-        rows?: Array<{ bookingId?: string; bookingStatus?: string }>;
-        total?: number;
-      }>("list", { query: "", page, limit: 50 });
-      for (const r of sheet.rows ?? []) {
-        const id = String(r.bookingId ?? "");
-        if (TEST_ID.test(id)) continue;
-        if (String(r.bookingStatus ?? "").toUpperCase() === "CONFIRMED") confirmed++;
-        else pending++;
-      }
-      const total = Number(sheet.total ?? 0);
-      if (page * 50 >= total || (sheet.rows ?? []).length === 0 || page >= 6) break;
-      page++;
-    }
-    return buildCounts(confirmed, pending);
+    // Two attempts: Apps Script cold starts often fail once then succeed.
+    const { confirmed, pending } = await withRetry(readSheetCounts, 2);
+    const counts = buildCounts(confirmed, pending);
+    lastGood = counts;
+    return counts;
   } catch {
+    // Transient GAS failure: serve the last known-good count from this
+    // instance instead of collapsing to the near-empty in-memory store
+    // (which is what caused the visible "fewer registrations" dips).
+    if (lastGood) return { ...lastGood };
     const s = getStats();
     const confirmed = Number(s.confirmed ?? 0);
     const pending = Number(s.pending ?? 0);
     return buildCounts(confirmed, pending, true);
   }
 }
+
+async function readSheetCounts(): Promise<{ confirmed: number; pending: number }> {
+  let confirmed = 0;
+  let pending = 0;
+  let page = 1;
+  for (;;) {
+    const sheet = await gasCall<{
+      ok: boolean;
+      rows?: Array<{ bookingId?: string; bookingStatus?: string }>;
+      total?: number;
+    }>("list", { query: "", page, limit: 50 }, 20_000);
+    for (const r of sheet.rows ?? []) {
+      const id = String(r.bookingId ?? "");
+      if (TEST_ID.test(id)) continue;
+      if (String(r.bookingStatus ?? "").toUpperCase() === "CONFIRMED") confirmed++;
+      else pending++;
+    }
+    const total = Number(sheet.total ?? 0);
+    if (page * 50 >= total || (sheet.rows ?? []).length === 0 || page >= 6) break;
+    page++;
+  }
+  return { confirmed, pending };
+}
+
+async function withRetry<T>(fn: () => Promise<T>, attempts: number): Promise<T> {
+  let lastErr: unknown = null;
+  for (let i = 0; i < attempts; i++) {
+    try {
+      return await fn();
+    } catch (e) {
+      lastErr = e;
+      if (i < attempts - 1) await new Promise((r) => setTimeout(r, 800 * (i + 1)));
+    }
+  }
+  throw lastErr;
+}
+
+// Last known-good counts for this instance (survives transient GAS blips).
+let lastGood: SeatCounts | null = null;
