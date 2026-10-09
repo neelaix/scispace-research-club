@@ -18,7 +18,7 @@ export const QCONNECT = {
   TICKET_PRICE: 50,
   CURRENCY: "INR",
   // Manual UPI collection (Cashfree removed)
-  UPI_ID: "9492758101@slc",
+  UPI_ID: "mithintiramani@upi",
   UPI_PAYEE: "SciSpace Research Club",
   UPI_NOTE: "Q-Connect 2026",
   MAX_PARTICIPANTS: 160,
