@@ -18,8 +18,8 @@ export const QCONNECT = {
   TICKET_PRICE: 50,
   CURRENCY: "INR",
   // Manual UPI collection (Cashfree removed)
-  UPI_ID: "mithintiramani@upi",
-  UPI_PAYEE: "SciSpace Research Club",
+  UPI_ID: "mandaneelaksh7m@okicici",
+  UPI_PAYEE: "Manda Neelaksh",
   UPI_NOTE: "Q-Connect 2026",
   MAX_PARTICIPANTS: 160,
   // Registration window switch — master kill-switch + scheduled open time.
