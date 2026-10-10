@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
-  ArrowLeft, ArrowRight, Atom, BadgeCheck, CalendarDays, Clock, Cpu,
+  ArrowLeft, Atom, BadgeCheck, CalendarDays, Clock, Cpu,
   FlaskConical, MapPin, Sparkles, Ticket, Users,
 } from "lucide-react";
 import { Layout } from "../components/Layout";
@@ -66,10 +66,6 @@ export function QConnectPage() {
   const seatLabel = seats
     ? `${seats.seatsLeft} seats left`
     : `${QCONNECT.MAX_PARTICIPANTS} seats`;
-  const soldOut = seats?.soldOut ?? false;
-  // New bookings paused but screenshot uploads still accepted → keep the
-  // button live so paid participants can reach the upload form.
-  const ctaEnabled = !soldOut && (registrationsOpen || uploadsOpen);
 
   return (
     <Layout>
@@ -107,19 +103,6 @@ export function QConnectPage() {
                     {uploadsOpen && !beforeOpen && ` ${QCONNECT.SCREENSHOT_UPLOADS_NOTE}`}
                   </p>
                 )}
-                <motion.button
-                  type="button"
-                  onClick={() => navigate(`${QCONNECT.EVENT_PATH}/register`)}
-                  disabled={!ctaEnabled}
-                  initial={{ opacity: 0, y: 14 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.2 }}
-                  whileHover={!ctaEnabled ? undefined : { scale: 1.015 }}
-                  whileTap={!ctaEnabled ? undefined : { scale: 0.99 }}
-                  className="qconnect-btn-primary w-full !py-4 !text-base disabled:opacity-60"
-                >
-                  {soldOut ? "HOUSE FULL" : registrationsOpen ? <>BOOK NOW · ₹{QCONNECT.TICKET_PRICE} <ArrowRight className="h-5 w-5" aria-hidden="true" /></> : beforeOpen ? "OPENS 11:00 AM IST" : uploadsOpen ? "UPLOAD PAYMENT SCREENSHOT" : "REGISTRATIONS PAUSED"}
-                </motion.button>
                 <p className="text-center text-xs text-white/45">
                   {seats
                     ? (
