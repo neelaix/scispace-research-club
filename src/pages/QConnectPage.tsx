@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import { Layout } from "../components/Layout";
 import { Reveal } from "../components/Reveal";
-import { QCONNECT } from "../config/qconnect";
+import { QCONNECT, isQConnectOpen } from "../config/qconnect";
 import { QuantumBackdrop, QuantumGrid, QuantumParticles } from "../components/qconnect/QuantumBackdrop";
 
 const chips = [
@@ -23,6 +23,16 @@ export function QConnectPage() {
   const [seats, setSeats] = useState<{
     seatsLeft: number; registered: number; capacity: number; soldOut: boolean;
   } | null>(null);
+  // Time-aware registration gate — re-evaluates so the page auto-opens at OPEN_AT without refresh.
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const t = setInterval(() => setNow(Date.now()), 30_000);
+    const onFocus = () => setNow(Date.now());
+    window.addEventListener("focus", onFocus);
+    return () => { clearInterval(t); window.removeEventListener("focus", onFocus); };
+  }, []);
+  const registrationsOpen = isQConnectOpen(now);
+  const beforeOpen = QCONNECT.REGISTRATIONS_OPEN && !registrationsOpen;
 
   // Live seat counter (Sheet truth, refreshed every 15s + on focus/return)
   useEffect(() => {
@@ -87,23 +97,23 @@ export function QConnectPage() {
                     </figcaption>
                   </figure>
                 </Reveal>
-                {!QCONNECT.REGISTRATIONS_OPEN && (
+                {!registrationsOpen && (
                   <p role="status" className="rounded-xl border border-amber-300/30 bg-amber-400/10 px-4 py-3 text-center text-sm font-semibold text-amber-200">
-                    ⏸️ {QCONNECT.REGISTRATIONS_CLOSED_NOTE}
+                    {beforeOpen ? `⏳ ${QCONNECT.REGISTRATIONS_OPENS_NOTE}` : `⏸️ ${QCONNECT.REGISTRATIONS_CLOSED_NOTE}`}
                   </p>
                 )}
                 <motion.button
                   type="button"
                   onClick={() => navigate(`${QCONNECT.EVENT_PATH}/register`)}
-                  disabled={soldOut || !QCONNECT.REGISTRATIONS_OPEN}
+                  disabled={soldOut || !registrationsOpen}
                   initial={{ opacity: 0, y: 14 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.2 }}
-                  whileHover={soldOut || !QCONNECT.REGISTRATIONS_OPEN ? undefined : { scale: 1.015 }}
-                  whileTap={soldOut || !QCONNECT.REGISTRATIONS_OPEN ? undefined : { scale: 0.99 }}
+                  whileHover={soldOut || !registrationsOpen ? undefined : { scale: 1.015 }}
+                  whileTap={soldOut || !registrationsOpen ? undefined : { scale: 0.99 }}
                   className="qconnect-btn-primary w-full !py-4 !text-base disabled:opacity-60"
                 >
-                  {soldOut ? "HOUSE FULL" : !QCONNECT.REGISTRATIONS_OPEN ? "REGISTRATIONS PAUSED" : <>BOOK NOW · ₹{QCONNECT.TICKET_PRICE} <ArrowRight className="h-5 w-5" aria-hidden="true" /></>}
+                  {soldOut ? "HOUSE FULL" : !registrationsOpen ? (beforeOpen ? "OPENS 11:00 AM IST" : "REGISTRATIONS PAUSED") : <>BOOK NOW · ₹{QCONNECT.TICKET_PRICE} <ArrowRight className="h-5 w-5" aria-hidden="true" /></>}
                 </motion.button>
                 <p className="text-center text-xs text-white/45">
                   {seats

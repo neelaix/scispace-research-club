@@ -22,9 +22,11 @@ export const QCONNECT = {
   UPI_PAYEE: "SciSpace Research Club",
   UPI_NOTE: "Q-Connect 2026",
   MAX_PARTICIPANTS: 160,
-  // Registration window switch — set to false to pause registrations
-  // (shows "closed for today" banner + disables booking), true to resume.
-  REGISTRATIONS_OPEN: false,
+  // Registration window switch — master kill-switch + scheduled open time.
+  // Deploy with OPEN=true + OPEN_AT in the future to auto-open (no redeploy at T-0).
+  REGISTRATIONS_OPEN: true,
+  REGISTRATIONS_OPEN_AT: "2026-10-10T11:00:00+05:30",
+  REGISTRATIONS_OPENS_NOTE: "Registrations open today at 11:00 AM IST.",
   REGISTRATIONS_CLOSED_NOTE: "Registrations are closed for today. We will resume tomorrow.",
   BOOKING_PREFIX: "QCON-2026-",
   EVENT_PATH: "/qconnect",
@@ -41,3 +43,13 @@ export const QCONNECT = {
     "Research Opportunities",
   ],
 } as const;
+
+/** Epoch ms for the scheduled open (IST string above). NaN if misconfigured. */
+export const QCONNECT_OPEN_AT_MS: number = Date.parse(QCONNECT.REGISTRATIONS_OPEN_AT);
+
+/** Time-aware gate: master switch AND now >= OPEN_AT. */
+export function isQConnectOpen(now: number = Date.now()): boolean {
+  if (!QCONNECT.REGISTRATIONS_OPEN) return false;
+  if (Number.isNaN(QCONNECT_OPEN_AT_MS)) return true;
+  return now >= QCONNECT_OPEN_AT_MS;
+}
