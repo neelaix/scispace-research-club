@@ -24,10 +24,13 @@ export const QCONNECT = {
   MAX_PARTICIPANTS: 160,
   // Registration window switch — master kill-switch + scheduled open time.
   // Deploy with OPEN=true + OPEN_AT in the future to auto-open (no redeploy at T-0).
-  REGISTRATIONS_OPEN: true,
+  REGISTRATIONS_OPEN: false,
   REGISTRATIONS_OPEN_AT: "2026-10-10T11:00:00+05:30",
   REGISTRATIONS_OPENS_NOTE: "Registrations open today at 11:00 AM IST.",
-  REGISTRATIONS_CLOSED_NOTE: "Registrations are closed for today. We will resume tomorrow.",
+  REGISTRATIONS_CLOSED_NOTE: "New registrations are paused.",
+  // Screenshot uploads stay open for registered/paid participants.
+  SCREENSHOT_UPLOADS_OPEN: true,
+  SCREENSHOT_UPLOADS_NOTE: "Screenshot uploads are still open — fill your details below and upload your payment screenshot.",
   BOOKING_PREFIX: "QCON-2026-",
   EVENT_PATH: "/qconnect",
   LOGO_PATH: "/qconnect/q.png",
@@ -52,4 +55,9 @@ export function isQConnectOpen(now: number = Date.now()): boolean {
   if (!QCONNECT.REGISTRATIONS_OPEN) return false;
   if (Number.isNaN(QCONNECT_OPEN_AT_MS)) return true;
   return now >= QCONNECT_OPEN_AT_MS;
+}
+
+/** Screenshot-upload gate: stays open for registered participants even when new registrations pause. */
+export function isUploadOpen(): boolean {
+  return QCONNECT.SCREENSHOT_UPLOADS_OPEN;
 }

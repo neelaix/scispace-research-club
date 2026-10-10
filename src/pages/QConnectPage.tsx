@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import { Layout } from "../components/Layout";
 import { Reveal } from "../components/Reveal";
-import { QCONNECT, isQConnectOpen } from "../config/qconnect";
+import { QCONNECT, isQConnectOpen, isUploadOpen } from "../config/qconnect";
 import { QuantumBackdrop, QuantumGrid, QuantumParticles } from "../components/qconnect/QuantumBackdrop";
 
 const chips = [
@@ -33,6 +33,7 @@ export function QConnectPage() {
   }, []);
   const registrationsOpen = isQConnectOpen(now);
   const beforeOpen = QCONNECT.REGISTRATIONS_OPEN && !registrationsOpen;
+  const uploadsOpen = isUploadOpen();
 
   // Live seat counter (Sheet truth, refreshed every 15s + on focus/return)
   useEffect(() => {
@@ -66,6 +67,9 @@ export function QConnectPage() {
     ? `${seats.seatsLeft} seats left`
     : `${QCONNECT.MAX_PARTICIPANTS} seats`;
   const soldOut = seats?.soldOut ?? false;
+  // New bookings paused but screenshot uploads still accepted → keep the
+  // button live so paid participants can reach the upload form.
+  const ctaEnabled = !soldOut && (registrationsOpen || uploadsOpen);
 
   return (
     <Layout>
@@ -100,20 +104,21 @@ export function QConnectPage() {
                 {!registrationsOpen && (
                   <p role="status" className="rounded-xl border border-amber-300/30 bg-amber-400/10 px-4 py-3 text-center text-sm font-semibold text-amber-200">
                     {beforeOpen ? `⏳ ${QCONNECT.REGISTRATIONS_OPENS_NOTE}` : `⏸️ ${QCONNECT.REGISTRATIONS_CLOSED_NOTE}`}
+                    {uploadsOpen && !beforeOpen && ` ${QCONNECT.SCREENSHOT_UPLOADS_NOTE}`}
                   </p>
                 )}
                 <motion.button
                   type="button"
                   onClick={() => navigate(`${QCONNECT.EVENT_PATH}/register`)}
-                  disabled={soldOut || !registrationsOpen}
+                  disabled={!ctaEnabled}
                   initial={{ opacity: 0, y: 14 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.2 }}
-                  whileHover={soldOut || !registrationsOpen ? undefined : { scale: 1.015 }}
-                  whileTap={soldOut || !registrationsOpen ? undefined : { scale: 0.99 }}
+                  whileHover={!ctaEnabled ? undefined : { scale: 1.015 }}
+                  whileTap={!ctaEnabled ? undefined : { scale: 0.99 }}
                   className="qconnect-btn-primary w-full !py-4 !text-base disabled:opacity-60"
                 >
-                  {soldOut ? "HOUSE FULL" : !registrationsOpen ? (beforeOpen ? "OPENS 11:00 AM IST" : "REGISTRATIONS PAUSED") : <>BOOK NOW · ₹{QCONNECT.TICKET_PRICE} <ArrowRight className="h-5 w-5" aria-hidden="true" /></>}
+                  {soldOut ? "HOUSE FULL" : registrationsOpen ? <>BOOK NOW · ₹{QCONNECT.TICKET_PRICE} <ArrowRight className="h-5 w-5" aria-hidden="true" /></> : beforeOpen ? "OPENS 11:00 AM IST" : uploadsOpen ? "UPLOAD PAYMENT SCREENSHOT" : "REGISTRATIONS PAUSED"}
                 </motion.button>
                 <p className="text-center text-xs text-white/45">
                   {seats

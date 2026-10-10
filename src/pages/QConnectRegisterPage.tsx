@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import QRCode from "qrcode";
 import { Layout } from "../components/Layout";
-import { QCONNECT, isQConnectOpen } from "../config/qconnect";
+import { QCONNECT, isQConnectOpen, isUploadOpen } from "../config/qconnect";
 import { QuantumBackdrop, QuantumGrid, QuantumParticles } from "../components/qconnect/QuantumBackdrop";
 
 // ─── Participant fields (exactly 1) ───────────────────────────────────────────
@@ -80,6 +80,7 @@ export function QConnectRegisterPage() {
   }, []);
   const registrationsOpen = isQConnectOpen(now);
   const beforeOpen = QCONNECT.REGISTRATIONS_OPEN && !registrationsOpen;
+  const uploadsOpen = isUploadOpen();
 
   // Live seats badge (Sheet truth) — refreshes so submit visibly moves the count
   useEffect(() => {
@@ -202,10 +203,10 @@ export function QConnectRegisterPage() {
   };
 
   const submitRegistration = async () => {
-    if (payBusy || !saved) return;
+    if (payBusy) return;
     setPayFail("");
-    if (!registrationsOpen) {
-      setPayFail(`${beforeOpen ? QCONNECT.REGISTRATIONS_OPENS_NOTE : QCONNECT.REGISTRATIONS_CLOSED_NOTE} Thank you for the amazing response!`);
+    if (!uploadsOpen) {
+      setPayFail(`${QCONNECT.REGISTRATIONS_CLOSED_NOTE} Thank you for the amazing response!`);
       return;
     }
     if (!shot) { setPayFail("Please upload your payment screenshot."); return; }
@@ -277,7 +278,8 @@ export function QConnectRegisterPage() {
             )}
             {!registrationsOpen && (
               <p role="status" className="mt-3 rounded-xl border border-amber-300/30 bg-amber-400/10 px-4 py-3 text-sm font-semibold text-amber-200">
-                {beforeOpen ? `⏳ ${QCONNECT.REGISTRATIONS_OPENS_NOTE}` : `⏸️ ${QCONNECT.REGISTRATIONS_CLOSED_NOTE}`} Thank you for the amazing response!
+                {beforeOpen ? `⏳ ${QCONNECT.REGISTRATIONS_OPENS_NOTE}` : `⏸️ ${QCONNECT.REGISTRATIONS_CLOSED_NOTE}`}
+                {uploadsOpen && !beforeOpen && ` ${QCONNECT.SCREENSHOT_UPLOADS_NOTE}`}
               </p>
             )}
 
@@ -447,7 +449,9 @@ export function QConnectRegisterPage() {
                   <p className="mt-1 leading-relaxed text-white/55">
                     {saved
                       ? "Upload your UPI payment screenshot below, tick the confirmation, and submit. Your status stays PENDING until we manually verify — the confirmation email from spaceresearch.club@vitap.ac.in is sent only after verification."
-                      : "Save your details above first. After successful submission, the UPI payment step will open here."}
+                      : uploadsOpen
+                        ? "New registrations are paused, but uploads are open: fill your details above (no need to save), upload your UPI payment screenshot below, tick the confirmation, and submit."
+                        : "Save your details above first. After successful submission, the UPI payment step will open here."}
                   </p>
                 </div>
 
@@ -456,7 +460,7 @@ export function QConnectRegisterPage() {
                   <label htmlFor="screenshot" className="qconnect-label">Payment Screenshot (JPG / PNG / WebP, max 5MB)</label>
                   <label
                     htmlFor="screenshot"
-                    className={`mt-1.5 flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed px-4 py-4 text-sm transition-colors ${!saved ? "cursor-not-allowed border-white/10 text-white/30" : "border-cyan-300/30 text-white/70 hover:border-cyan-300/60 hover:text-white"}`}
+                    className={`mt-1.5 flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed px-4 py-4 text-sm transition-colors ${!uploadsOpen ? "cursor-not-allowed border-white/10 text-white/30" : "border-cyan-300/30 text-white/70 hover:border-cyan-300/60 hover:text-white"}`}
                   >
                     <Upload className="h-4 w-4 shrink-0" />
                     <span className="truncate">{shot ? `${shot.name} · ${(shot.size / 1024).toFixed(0)} KB` : "Choose screenshot file…"}</span>
@@ -465,18 +469,18 @@ export function QConnectRegisterPage() {
                     id="screenshot"
                     type="file"
                     accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
-                    disabled={!saved || payBusy}
+                    disabled={!uploadsOpen || payBusy}
                     onChange={(e) => onFile(e.target.files?.[0])}
                     className="sr-only"
                   />
                 </div>
 
                 {/* Tick confirmation */}
-                <label className={`mt-3 flex cursor-pointer items-start gap-2.5 text-sm ${!saved ? "cursor-not-allowed opacity-50" : "text-white/75"}`}>
+                <label className={`mt-3 flex cursor-pointer items-start gap-2.5 text-sm ${!uploadsOpen ? "cursor-not-allowed opacity-50" : "text-white/75"}`}>
                   <input
                     type="checkbox"
                     checked={ticked}
-                    disabled={!saved || payBusy}
+                    disabled={!uploadsOpen || payBusy}
                     onChange={(e) => setTicked(e.target.checked)}
                     className="mt-0.5 h-4 w-4 shrink-0 accent-cyan-300"
                   />
@@ -492,8 +496,8 @@ export function QConnectRegisterPage() {
                 <button
                   type="button"
                   onClick={submitRegistration}
-                  disabled={!saved || !shot || !ticked || payBusy || !registrationsOpen}
-                  title={!registrationsOpen ? (beforeOpen ? QCONNECT.REGISTRATIONS_OPENS_NOTE : QCONNECT.REGISTRATIONS_CLOSED_NOTE) : !saved ? "Save your details first" : "Submit after uploading + ticking confirmation"}
+                  disabled={!uploadsOpen || !shot || !ticked || payBusy}
+                  title={!uploadsOpen ? QCONNECT.REGISTRATIONS_CLOSED_NOTE : !shot || !ticked ? "Upload screenshot + tick confirmation" : "Submit screenshot"}
                   className="qconnect-btn-primary mt-5 w-full disabled:opacity-60 group"
                 >
                   {payBusy ? (

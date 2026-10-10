@@ -18,7 +18,7 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { createRegistration, updateRegistration } from "./_store.js";
 import { gasCall } from "./_gas.js";
 import { getLiveSeatCounts } from "./_seats.js";
-import { isWindowOpen, REGISTRATIONS_CLOSED_MESSAGE, REGISTRATIONS_OPEN_AT_MS, REGISTRATIONS_OPENS_MESSAGE } from "./_window.js";
+import { isUploadOpen, REGISTRATIONS_CLOSED_MESSAGE } from "./_window.js";
 import {
   handleCors, setSecurityHeaders, rateLimit, safeError,
   sanitizeString, isValidEmail, isValidPhone,
@@ -35,8 +35,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (req.method !== "POST")   return safeError(res, 405, "Method not allowed");
   if (!rateLimit(req, "qconnect-submit", 5, 60_000))
     return safeError(res, 429, "Too many requests. Please wait a moment.");
-  if (!isWindowOpen())
-    return safeError(res, 403, Date.now() < REGISTRATIONS_OPEN_AT_MS ? REGISTRATIONS_OPENS_MESSAGE : REGISTRATIONS_CLOSED_MESSAGE);
+  if (!isUploadOpen())
+    return safeError(res, 403, REGISTRATIONS_CLOSED_MESSAGE);
 
   try {
     const rawBody: unknown = typeof req.body === "string"
