@@ -3,9 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   ArrowLeft, Loader2, Ticket, UserRound,
-  BadgeCheck, Zap, Lock, CreditCard, CheckCircle2, Pencil, Upload, Copy, Check,
+  BadgeCheck, Zap, Lock, CheckCircle2, Pencil, Upload,
 } from "lucide-react";
-import QRCode from "qrcode";
 import { Layout } from "../components/Layout";
 import { QCONNECT, isQConnectOpen, isUploadOpen } from "../config/qconnect";
 import { QuantumBackdrop, QuantumGrid, QuantumParticles } from "../components/qconnect/QuantumBackdrop";
@@ -50,9 +49,9 @@ function fileToBase64(file: File): Promise<string> {
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
-// Manual UPI flow (no payment gateway):
+// Screenshot-upload flow (QR/UPI details removed):
 // Step 1: Participant Details → POST /api/qconnect/collect → LEADS tab.
-// Step 2: UPI instructions/QR → upload screenshot + tick checkbox →
+// Step 2: upload screenshot + tick checkbox →
 //         POST /api/qconnect/submit → Drive + REGISTRATIONS PENDING row.
 // Confirmation email is sent MANUALLY later from spaceresearch.club@vitap.ac.in.
 export function QConnectRegisterPage() {
@@ -65,8 +64,6 @@ export function QConnectRegisterPage() {
   const [payFail, setPayFail] = useState("");
   const [saved,   setSaved]   = useState(false);
   const [leadId,  setLeadId]  = useState<string | null>(null);
-  const [qrSrc,   setQrSrc]   = useState("");
-  const [copied,  setCopied]  = useState(false);
   const [shot,    setShot]    = useState<File | null>(null);
   const [ticked,  setTicked]  = useState(false);
   const [seats,   setSeats]   = useState<{ seatsLeft: number; registered: number; capacity: number } | null>(null);
@@ -104,26 +101,6 @@ export function QConnectRegisterPage() {
   const setField = (k: keyof Participant, v: string) => {
     setP((prev) => ({ ...prev, [k]: v }));
     if (errs[k]) setErrs((prev) => ({ ...prev, [k]: undefined }));
-  };
-
-  // UPI QR for exact ₹50 (generated client-side, no gateway)
-  useEffect(() => {
-    const upiUrl =
-      `upi://pay?pa=${encodeURIComponent(QCONNECT.UPI_ID)}` +
-      `&pn=${encodeURIComponent(QCONNECT.UPI_PAYEE)}` +
-      `&am=${QCONNECT.TICKET_PRICE}&cu=${QCONNECT.CURRENCY}` +
-      `&tn=${encodeURIComponent(QCONNECT.UPI_NOTE)}`;
-    QRCode.toDataURL(upiUrl, { width: 220, margin: 1 })
-      .then(setQrSrc)
-      .catch(() => setQrSrc(""));
-  }, []);
-
-  const copyUpi = async () => {
-    try {
-      await navigator.clipboard.writeText(QCONNECT.UPI_ID);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch { /* clipboard unavailable — user can copy manually */ }
   };
 
   const submitDetails = async () => {
@@ -379,6 +356,22 @@ export function QConnectRegisterPage() {
 
               {/* ── UPI payment + screenshot submit ─────────────────────────── */}
               <div id="qconnect-payment" className="qconnect-glass scroll-mt-28 p-6" aria-live="polite">
+                {/* Paid but not uploaded → upload here */}
+                <div className="rounded-2xl border border-emerald-300/25 bg-emerald-400/10 p-4 text-sm">
+                  <p className="font-semibold text-emerald-200">✅ Payment done but screenshot not uploaded? Upload here.</p>
+                  <p className="mt-1 leading-relaxed text-emerald-100/70">
+                    Fill your details above, attach your payment screenshot below, tick the confirmation, and submit.
+                  </p>
+                </div>
+
+                {/* Payment failed → not allowed */}
+                <div className="mt-3 rounded-2xl border border-red-400/25 bg-red-500/10 p-4 text-sm">
+                  <p className="font-semibold text-red-200">⚠️ Payment failed? Sorry for the inconvenience — you are not allowed for the event.</p>
+                  <p className="mt-1 leading-relaxed text-red-100/70">
+                    For any queries, come to CB221.
+                  </p>
+                </div>
+
                 {/* Amount card */}
                 <div className="rounded-2xl border border-cyan-300/20 bg-black/30 p-5">
                   <div className="flex items-center justify-between text-sm text-white/60">
@@ -398,49 +391,6 @@ export function QConnectRegisterPage() {
                   </div>
                 </div>
 
-                {/* UPI instructions + QR */}
-                <div className="mt-4 rounded-2xl border border-cyan-300/20 bg-black/30 p-5">
-                  <p className="text-sm font-semibold text-white/80">Pay via UPI</p>
-                  <div className="mt-3 flex flex-col items-center gap-4 sm:flex-row sm:items-start">
-                    {qrSrc ? (
-                      <img src={qrSrc} alt="UPI payment QR code for ₹50" className="h-44 w-44 rounded-xl border border-white/10 bg-white p-2" />
-                    ) : (
-                      <div className="grid h-44 w-44 place-items-center rounded-xl border border-white/10 bg-white/5 text-xs text-white/40">
-                        Loading QR…
-                      </div>
-                    )}
-                    <div className="w-full flex-1 text-sm">
-                      <p className="leading-relaxed text-white/60">
-                        Scan the QR with any UPI app and pay exactly{" "}
-                        <strong className="text-white">₹{QCONNECT.TICKET_PRICE}</strong> to:
-                      </p>
-                      <button
-                        type="button"
-                        onClick={copyUpi}
-                        title="Copy UPI ID"
-                        className="mt-2 inline-flex w-full items-center justify-between gap-2 rounded-xl border border-cyan-300/25 bg-cyan-300/5 px-3 py-2 font-mono text-sm text-cyan-100"
-                      >
-                        <span className="truncate">{QCONNECT.UPI_ID}</span>
-                        {copied
-                          ? <Check className="h-4 w-4 shrink-0 text-emerald-300" />
-                          : <Copy className="h-4 w-4 shrink-0 text-cyan-300" />}
-                      </button>
-                      <p className="mt-2 text-xs leading-relaxed text-white/45">
-                        Payee: {QCONNECT.UPI_PAYEE} · Note: {QCONNECT.UPI_NOTE} · Save your payment screenshot after paying.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Payment methods */}
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {["UPI"].map((m) => (
-                    <span key={m} className="inline-flex items-center gap-1.5 rounded-full border border-cyan-300/20 bg-cyan-300/5 px-3 py-1 text-[11px] font-semibold text-cyan-200/80">
-                      <CreditCard className="h-3 w-3" /> {m}
-                    </span>
-                  ))}
-                </div>
-
                 {/* What happens next */}
                 <div className="mt-4 rounded-xl border border-white/10 bg-black/30 p-3 text-xs">
                   <p className="flex items-center gap-1.5 font-semibold text-white/80">
@@ -448,10 +398,10 @@ export function QConnectRegisterPage() {
                   </p>
                   <p className="mt-1 leading-relaxed text-white/55">
                     {saved
-                      ? "Upload your UPI payment screenshot below, tick the confirmation, and submit. Your status stays PENDING until we manually verify — the confirmation email from spaceresearch.club@vitap.ac.in is sent only after verification."
+                      ? "Upload your payment screenshot below, tick the confirmation, and submit. Your status stays PENDING until we manually verify — the confirmation email from spaceresearch.club@vitap.ac.in is sent only after verification. For any queries, come to CB221."
                       : uploadsOpen
-                        ? "New registrations are paused, but uploads are open: fill your details above (no need to save), upload your UPI payment screenshot below, tick the confirmation, and submit."
-                        : "Save your details above first. After successful submission, the UPI payment step will open here."}
+                        ? "Uploads are open: fill your details above (no need to save), upload your payment screenshot below, tick the confirmation, and submit. Status stays PENDING until manual verification. For any queries, come to CB221."
+                        : "Save your details above first. After successful submission, the payment step will open here."}
                   </p>
                 </div>
 
