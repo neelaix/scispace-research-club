@@ -358,9 +358,9 @@ export function QConnectRegisterPage() {
               <div id="qconnect-payment" className="qconnect-glass scroll-mt-28 p-6" aria-live="polite">
                 {/* Paid but not uploaded → upload here */}
                 <div className="rounded-2xl border border-emerald-300/25 bg-emerald-400/10 p-4 text-sm">
-                  <p className="font-semibold text-emerald-200">✅ Payment done but screenshot not uploaded? Upload here.</p>
+                  <p className="font-semibold text-emerald-200">✅ Paid but didn't upload your screenshot? You're allowed — upload it here.</p>
                   <p className="mt-1 leading-relaxed text-emerald-100/70">
-                    Fill your details above, attach your payment screenshot below, tick the confirmation, and submit.
+                    Attach your payment screenshot below, tick the confirmation, and submit.
                   </p>
                 </div>
 
@@ -400,7 +400,7 @@ export function QConnectRegisterPage() {
                     {saved
                       ? "Upload your payment screenshot below, tick the confirmation, and submit. Your status stays PENDING until we manually verify — the confirmation email from spaceresearch.club@vitap.ac.in is sent only after verification. For any queries, come to CB221."
                       : uploadsOpen
-                        ? "Uploads are open: fill your details above (no need to save), upload your payment screenshot below, tick the confirmation, and submit. Status stays PENDING until manual verification. For any queries, come to CB221."
+                        ? "Upload your payment screenshot below, tick the confirmation, and submit. Status stays PENDING until manual verification. For any queries, come to CB221."
                         : "Save your details above first. After successful submission, the payment step will open here."}
                   </p>
                 </div>

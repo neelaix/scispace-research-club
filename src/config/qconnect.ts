@@ -30,7 +30,7 @@ export const QCONNECT = {
   REGISTRATIONS_CLOSED_NOTE: "New registrations are paused.",
   // Screenshot uploads stay open for registered/paid participants.
   SCREENSHOT_UPLOADS_OPEN: true,
-  SCREENSHOT_UPLOADS_NOTE: "Screenshot uploads are still open — fill your details below and upload your payment screenshot.",
+  SCREENSHOT_UPLOADS_NOTE: "If you paid but didn't upload your screenshot, you're allowed — upload it here.",
   BOOKING_PREFIX: "QCON-2026-",
   EVENT_PATH: "/qconnect",
   LOGO_PATH: "/qconnect/q.png",
